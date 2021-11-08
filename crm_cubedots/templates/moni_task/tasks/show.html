@@ -1,0 +1,82 @@
+{% extends 'layouts/user_layout.html' %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+{% block content %}
+{% if user.is_authenticated %}
+    {% if user.role == "tl" or  user.role == "qa" %}
+<script>
+    var tasksPk = JSON.parse("{{task_data|escapejs}}");
+    var tasksId  = tasksPk[0].pk
+    
+    var intervalTimeDuration = 600000;
+    var tasks = JSON.parse ("{{task_data|escapejs}}");
+    var task = tasks[0].fields;
+    var subTask = "{{subTask|escapejs}}";
+   
+    var baseUrl = "{{request.get_host}}";
+    var baseSegment = "/moni_tasks";
+    var task = tasks[0].fields;
+    var taskStatusListAccess = "{{taskStatusListAccessData|escapejs}}";
+    var taskStatusTimerViewAccess =  "{{taskStatusTimerViewAccessData|escapejs}}";
+    
+
+</script>
+
+<div class="container-fluid mt-5" >
+    <div class="row justify-content-center" >
+        <div class="col-md-12">
+            <div class="card" >
+                <div class="card-header bg-info text-white">
+                    'View task' for project "<strong>{% if task.project %} {{task.project.name}} {% else %} - {% endif %}</strong>"
+
+                    - TaskID: "<strong>{{ task.taskid }}</strong>"
+                    
+                    <a class="btn btn-sm btn-danger float-right" href="{% url 'moni_tasks_showProjects' task.project_id %}"> Back</a>
+                </div>
+
+                <div class="card-body">   
+                    <div class="row p-2 text-white" style="-webkit-box-shadow: 0px 0px 4px 0px rgba(50, 50, 50, 0.79);
+                    -moz-box-shadow:    0px 0px 4px 0px rgba(50, 50, 50, 0.79);
+                    box-shadow:         0px 0px 4px 0px rgba(50, 50, 50, 0.79); background-color:#014047;">
+                        <div class="col">
+                            {% if taskPrevious %}
+                            <a href="{% url 'moni_tasks_show' taskPrevious.id %}" class="btn btn-sm btn-success" title="View"> <i class="fas fa-arrow-left"></i> Previous</a><br>
+                            <small>{{ taskPrevious.taskid }}</small>
+                            {% else %}
+                            <button class="btn btn-sm btn-success disabled" title="Previous"> <i class="fas fa-arrow-left"></i> Previous </button>
+                            {% endif %}
+                        </div>
+                        <div class="col text-right">
+                            {% if taskNext %}
+                            <a href="{% url 'moni_tasks_show' taskNext.id %}" class="btn btn-sm btn-success" title="View"> Next <i class="fas fa-arrow-right"></i></a><br>
+                            <small>{{ taskNext.taskid }}</small>
+                            {% else %}
+                            <button class="btn btn-sm btn-success disabled" title="Next"> Next <i class="fas fa-arrow-right"></i></button>
+                            {% endif %}
+                        </div>
+                    </div><div style="border-bottom: 3px solid #d90275;"></div><br />
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            
+                          
+                            <div id="root"></div>
+                            {% render_bundle 'staticfiles' 'js' %}
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+{% include 'components/forbidden.html' %}
+     
+     {% endif %}
+     {% else %}
+     {% include 'components/401.html' %}
+     {% endif %}
+
+
+{% endblock %}

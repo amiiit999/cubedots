@@ -1,0 +1,20 @@
+
+{% block content %}
+{% load static %}
+{% for message in messages %}
+{% if message.tags == "success" %}
+
+
+<span {% if message.tags %} class="alert alert-success" {% endif %}> <b>Success | </b> {{ message }} </span><br><br>
+{% endif %}
+{% if message.tags == "error" %}
+<span {% if message.tags %} class="alert alert-danger" {% endif %}>  <b>Failed | </b> {{ message }} </span><br><br>
+{% endif %}
+{% if message.tags == "warning" %}
+<span {% if message.tags %} class="alert alert-warning" {% endif %}>  <b>Warning | </b> {{ message }} </span><br><br>
+{% endif %}
+
+{% endfor %}
+
+{% endblock %}
+

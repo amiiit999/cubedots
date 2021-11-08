@@ -1,0 +1,183 @@
+{% extends 'layouts/user_layout.html' %}
+{% block content %}
+{% load static %}
+{% if user.is_authenticated %}
+{% if user.role == 'user' or user.role == 'tl' or user.role == 'qa' %}
+
+
+
+
+  {% include "components/validation_alert.html" %}
+
+<div class="container">
+
+  <div class="row mt-5 mb-5">
+    <div class="col-md-8 m-auto border"
+      style="-webkit-box-shadow: 0px 0px 4px 0px rgba(50, 50, 50, 0.79);-moz-box-shadow:    0px 0px 4px 0px rgba(50, 50, 50, 0.79);box-shadow:         0px 0px 4px 0px rgba(50, 50, 50, 0.79); background-color:#fff;">
+      <h2 class="text-center mt-5 mb-3 text-dark">Employee Details</h2>
+      <div class="col-md-12 m-auto border text-secondary text-capitalize p-3"
+        style="box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.46);-webkit-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.46);-moz-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.46);">
+        <div class="row m-auto">
+          <div class="col-md-6">
+            <h4 class="text-secondary"><b>{{form.instance.first_name}} {{form.instance.last_name}}</b></h4><small><span>
+                <i> Last Login: {{form.instance.last_login}}</i></span></small> <br>
+            <span><i class="fas fa-user-cog fa-2x mt-2"></i><b> &nbsp;&nbsp; Role</b> </span> <span
+              class="text-uppercase mx-5">: {{form.instance.role}}</span><br>
+            <span><i class="fas fa-user-tie fa-2x"></i> <b>&nbsp; &nbsp;&nbsp;Designation </b>:
+              {{form.instance.designation}}</span><br>
+            <span><i class="fas fa-building fa-2x"></i> <b>&nbsp;&nbsp;&nbsp; Department </b>:
+              {{form.instance.department}}</span>
+          </div>
+          <div class="col-md-6 p-3">
+            <form action="{% url 'user_profile' form.instance.id %}" method="POST" class="post-form"
+              enctype="multipart/form-data">
+              {% csrf_token %}
+              {% if form.instance.avatar %}
+              <div class="container-profilepic card rounded-circle overflow-hidden float-right">
+                <img src="{{form.instance.avatar.url}}" width="150" height="150" alt=""
+                  class="rounded-circle border border-dark" />
+                <div class="middle-profilepic text-center card-img-overlay d-none flex-column justify-content-center">
+
+                  <div class="text-profilepic text-white">
+                    <i class="fas fa-camera"></i>
+                    <div class="text-profilepic"><label for="upload-photo">Change Picture</label> {{ form.avatar }}</div>
+                  </div>
+                </div>
+              </div>
+              {% else %}
+              {% if form.instance.gender == 'male' %}
+
+              <div class="container-profilepic card rounded-circle overflow-hidden float-right">
+                <img src="{% static 'images/avatar/male_avatar.jpg' %}" width="150" height="150" alt=""
+                  class="rounded-circle" />
+                <div class="middle-profilepic text-center card-img-overlay d-none flex-column justify-content-center">
+
+                  <div class="text-profilepic text-white">
+                    <i class="fas fa-camera"></i>
+                    <div class="text-profilepic"><label for="upload-photo">Change Picture</label> {{ form.avatar }}</div>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+              {% if form.instance.gender == 'female' %}
+              <div class="container-profilepic card rounded-circle overflow-hidden float-right">
+                <img src="{% static 'images/avatar/female_avatar.jpg' %}" width="150" height="150" alt=""
+                  class="rounded-circle" />
+                <div class="middle-profilepic text-center card-img-overlay d-none flex-column justify-content-center">
+
+                  <div class="text-profilepic text-white">
+                    <i class="fas fa-camera"></i>
+                    <div class="text-profilepic"><label for="upload-photo">Change Picture</label> {{ form.avatar }}</div>
+                  </div>
+                </div>
+              </div>
+
+              {% endif %}
+              {% endif %}
+            </form>
+          </div>
+        </div>
+      </div><br>
+      <div class="col-md-12 m-auto border text-secondary text-capitalize p-3"
+        style="box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.46);-webkit-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.46);-moz-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.46);">
+        <div class="row">
+          <div class="table-responsive px-3">
+            <table class="table table-bordered text-secondary text-capitalize">
+              <tbody>
+                <tr>
+                  <td><strong>Email:</strong></td>
+                  <td><span class="text-lowercase">{{form.instance.email}}</span></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Gender:</strong></td>
+                  <td>{{form.instance.gender}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Contact No :</strong></td>
+                  {% if form.instance.contact_no %}
+                  <td>{{form.instance.contact_no}}</td>
+                  {% else %}
+                  <td>Not Available </td>
+                  {% endif %}
+                </tr>
+                <tr>
+                  <td><strong>status :</strong></td>
+                  <td>{{form.instance.status}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Manager Name :</strong></td>
+                  <td>{{form.instance.manager_name}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Team Name :</strong></td>
+                  <td>{{form.instance.team_name}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Team Leader :</strong></td>
+                  <td>{{form.instance.team_leader}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Skills :</strong></td>
+                  <td>{{form.instance.skills}}</td>
+                </tr>
+                <td><strong>Qualifications :</strong></td>
+                <td>{{form.instance.qualifications}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Blood Group :</strong></td>
+                  <td>{{form.instance.blood_group}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Date of Joined :</strong></td>
+                  <td>{{form.instance.date_joined}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Local Address :</strong></td>
+                  <td>{{form.instance.local_address}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Permanent Address :</strong></td>
+                  <td>{{form.instance.permanent_address}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Pin Code :</strong></td>
+                  <td>{{form.instance.postal_code}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {% if user.role == 'user' or user.role == 'tl' or user.role == 'qa' %}
+        <form method="post" action="{% url 'user_reset_password' form.instance.id %}"><button class="btn btn-primary" type="submit" title="Reset Password" onclick="return confirm('Are you sure want to Reset?')">Reset Password</button>
+          {% csrf_token %}
+        </form>
+        {% endif %}   
+      </div>
+     
+    
+      <div class="col text-center mb-5 mt-2">
+        <!-- <a class="btn btn-primary" href="{% url 'admin_user_update' form.instance.id %}" title="Edit">Update</a> -->
+        {% if user.role == 'user' %}
+        <a class="btn btn-secondary" href="{% url 'user_dashboard_index' %}" title="Back">Back</a>
+        {% endif %}
+
+        {% if user.role == 'tl' or user.role == 'qa' %}
+        <a class="btn btn-secondary" href="{% url 'moni_task' %}" title="Back">Back</a>
+
+        {% endif %}
+      </div>
+
+
+    </div>
+  </div>
+
+</div>
+{% else %}
+{% include 'components/forbidden.html' %}
+ 
+ {% endif %}
+ {% else %}
+ {% include 'components/401.html' %}
+ {% endif %}
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'layouts/index.html' %}
+{% block content %}
+{% load static %}
+
+    {% for message in messages %}
+    {% if message.tags == "success" %}
+    <span {% if message.tags %} class="alert alert-success font-weight-bold" {% endif %}> {{ message }} </span>
+    {% endif %}
+    
+    {% if message.tags == "failed" %}
+    <span {% if message.tags %} class="alert alert-Danger font-weight-bold" {% endif %}> {{ message }} </span>
+    {% endif %}
+    {% endfor %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-info"><b>Dashboard</b></div>
+    
+                    <div class="card-body">
+                    <strong>Welcome !! 
+                        {% if user.is_authenticated %}
+                            {{ user.get_username }}                                               
+                    </strong><br><br>                
+                    {% if user.is_staff == 0 %}
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="card-block text-white bg-primary mb-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">Total Active Projects</h5>
+                                       
+                                        
+                                       <h1 class="text-center"><a href="" class="text-white" ><strong>0</strong></a></h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 ">
+                                <div class="card-block text-white bg-secondary mb-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">Total Completed Tasks</h5>
+                                        
+                                        <h1 class="text-center"><strong>0</strong></h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="card-block text-white bg-success border mb-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">Total Active Tasks</h5>
+                                       
+                                        <h1 class="text-center"><strong>0</strong></h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="card-block text-white bg-danger mb-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">Total Rejected Tasks</h5>
+                                        <h1 class="text-center"><strong>0</strong></h1>
+                                    </div>
+                                </div>
+                            </div>                                                                 
+                           
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}

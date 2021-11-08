@@ -1,0 +1,104 @@
+{% extends 'layouts/index.html' %}
+{% block content %}
+{% load static %}
+{% if user.is_authenticated %}
+{% if user.is_staff == 1 and user.groups.all.0.name == "admin" or user.role == 'admin' or user.role == 'administrator' %}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            {% include "components/validation_alert.html" %} 
+            <div class="card">
+                <div class="card-header bg-info text-white"><b>Pre tasks</b> 
+                    
+                <a class="btn btn-sm btn-dark" href="{% url 'pretask_create' %}"> <i class="fas fa-plus-circle"></i> Add New</a>
+               
+                <a class="btn btn-sm btn-dark" href="{% url 'pretask_createBulk_index' %}"> Create bulk tasks </a>
+                <a class="btn btn-sm btn-dark" href="{% url 'pretask_upload_sheet_index' %}"> Upload task list in XLSX</a>    
+                <a class="btn btn-sm btn-dark" href="{% url 'pretask_export_tasks_index' %}"> Download tasks</a>
+
+                
+                </div>
+
+                <div class="card-body">
+                    <div class="row">                      
+                            
+                        <div class="col-md-6">
+                            <div class="form-group">                                  
+                                    <form method="get" action="{% url 'pretask_search' %}">
+                                    <input class="form-control" type="text" name="search" id="id_q" placeholder="Type text here" required/>  
+                            </div>
+                        </div>
+      
+                        <div class="col-md-2">
+                            <div class="form-group">
+
+                                <button type="submit" class="btn btn-sm0 btn-secondary"><i class="fas fa-search"></i> Search</button>
+                                <a class="btn btn-sm0 btn-danger" href="{% url 'pretasks_index' %}" title=""><i class="fa fa-times"></i> </a>
+                                 </form>
+                            </div>
+                        </div>
+                </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered table-hover">
+                            <thead class="table-info">
+                                <tr>
+                                    <th width="5%">#</th>
+                                    <th width="5%"><a class="text-decoration-none text-dark" href="">ID</a></th>
+                                    <th width="15%"><a class="text-decoration-none text-dark" href="">Task ID</a></th>
+                                    <th width="20%"><a class="text-decoration-none text-dark" href="">Name</a></th>
+                                    <th width="15%"><a class="text-decoration-none text-dark" href="">Department</a></th>
+                                    <th width="15%">Required Time</th>
+                                    <th width="10%"><a class="text-decoration-none text-dark" href="">Created At</a></th>
+                                    <th width="15%" align="right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for row in page_obj %}
+                                <tr>
+                                    <td scope="row">{{ forloop.counter }}</td>
+                                    <td>{{row.id}}</td>
+                                    <td>{{row.taskid}}</td>
+                                    <td>{{row.name}}</td>
+                                    <td>{{row.department.name}}</td>
+                                    <td>{{row.required_time}}</td>               
+                                    <td>
+                                        <div class="medium">{{row.created_at|date:"d M Y" }}
+                                    </td>
+                                </td>
+                                        
+                                <td align="left">
+                                   
+                                    <a href="{% url 'pretask_update' row.id %}"  title="Edit"> <i class="fas fa-edit fa-lg text-dark"></i>&nbsp;</a>
+                                
+                                    <form method="post" action="{% url 'pretask_delete' row.id %}" style="display: inline;"><button class="float-right btn-sm-0 btn-danger" type="submit" title="Remove" onclick="return confirm('Are you sure want to delete?')"><i class="fas fa-md fa-trash"></i></button>
+                                        {% csrf_token %}
+                                    </form>
+                                </td>
+                                </tr>
+                               {% empty %}
+                                <tr>
+                                    <td colspan="8" style="text-align: center">No record to show</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            {% include 'components/paginator.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+{% include 'components/forbidden.html' %}
+    {% endif %}
+    {% else %}
+    {% include 'components/401.html' %}
+    {% endif %}
+{% endblock %}

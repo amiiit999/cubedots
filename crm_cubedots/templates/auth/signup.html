@@ -1,0 +1,39 @@
+{% extends 'layouts/index.html' %}
+{% block content %}
+{% load static %}
+<section class="w3l-login-6">
+    <div class="login-hny">
+        <div class="form-content">
+            <div class="form-right">
+                <div class="overlay">
+                    <div class="grid-info-form">
+                        <img class="bp2-whiteorange" src="{% static 'images/index.png' %}" width="62%">
+                        <br><br>
+                        <br>
+                        <span class="block py-3 px-5 text-white " style="background-color:#7e0369; opacity: 50%;"><b>CUBEDOTS TASK CRM</b></span>
+                        
+                    </div>
+                
+                </div>
+            </div>
+            <div class="form-left ">
+                <div class="middle">
+                    <h4>Register Here</h4>
+                    <br>
+                </div>
+                {% load crispy_forms_tags %}
+
+                <form action="" method="POST" novalidate>
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <input type="submit" class="btn btn-success text-white" value="Submit"><br>
+                    <a href="{{'/signin'}}" class="btn btn-info text-white">Sign In</a>
+                </form>
+              
+            </div>
+            
+        </div>
+        
+    </div>
+</section>
+{% endblock %}

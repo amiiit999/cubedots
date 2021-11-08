@@ -1,0 +1,3 @@
+https://raturi.in/blog/multi-page-web-application-using-django-react-and-webpack/
+
+npm install webpack-bundle-tracker@0.4.3 

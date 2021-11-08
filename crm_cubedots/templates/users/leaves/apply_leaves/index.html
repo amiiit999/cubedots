@@ -1,0 +1,161 @@
+{% extends 'layouts/user_layout.html' %}
+{% block content %}
+{% load static %}
+
+{% if user.is_authenticated %}
+    {% if user.role == 'user' %}
+    {% include "components/validation_alert.html" %}
+    <h3 class="ml-3 p-0" style="color:rgb(87, 86, 86)"><i class="fas fa-tachometer-alt pr-3"></i>Leaves Dashboard </h3>
+    <div class="row m-0 p-0">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-info hover-expand-effect">
+                <div class="icon" style="opacity: 0.8;">
+                    <a href="{% url 'user_tasks' %}"><i class="fas fa-rupee-sign"></i></a>
+                </div>
+                <div class="content">
+                    <div class="text-white"><a href="{% url 'user_tasks' %}" class="text-white"><b>Paid Leaves</b></a></div>
+                   <a href="#" class="text-white">Click on icon</a>
+                </div>
+            </div>
+        </div>
+    </div>    
+    <div class="container mt-3">
+        <div class="row justify-content-center">
+            
+            <div class="col-md-12"><br>
+                
+                <div class="card">
+                    <div class="card-header bg-info text-white" style="border-radius: 0;"><b>Leaves History</b> 
+                        <a class="btn btn-sm btn-success border float-right" style="border-radius: 0;" href="{% url 'emp_apply_leaves_create' %}"><i class="fas fa-plus-circle"></i> Apply Leave</a>
+                       
+                    </div>
+    
+                    <div class="card-body">
+
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered table-hover" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; font-size: 14px;">
+                                <thead class="table-info">
+                                    <tr>
+                                        
+                                        <th width="5%"><a class="text-decoration-none text-dark" href="">ID</a></th>
+                                        
+                                        <th width="12%"><a class="text-decoration-none text-dark" href="">Leaves Type</a></th>
+                                        <th width="13%"><a class="text-decoration-none text-dark" href="" >Reason</a></th>
+                                        <th width="10%"><a class="text-decoration-none text-dark" href="" >From</a></th>
+                                        <th width="10%"><a class="text-decoration-none text-dark" href="" >To</a></th>
+                                        <th width="10%"><a class="text-decoration-none text-dark" href="">Applied At</a></th>
+                                        <th width="5%"><a class="text-decoration-none text-dark" href="">Day(s)</a></th>
+                                        
+                                        <th width="10%"><a class="text-decoration-none text-dark" href="">Team Leader</a></th>                                    
+                                        
+                                        <th width="15%"><a class="text-decoration-none text-dark" href="" >Approval Status</a></th>
+
+                                        <th width="10%" align="right">Action</th>
+                                       
+                                       
+                                    </tr>
+                                </thead>
+                                <tbody> 
+                                    {% for row in page_obj %}
+                                    <tr >
+                                       
+                                        <td scope="row">{{ forloop.counter }}</td>
+                                        <td>
+                                            <span>{{ row.leaves_type.name }}</span>
+                                        </td>
+    
+                                        <td>
+                                            {{ row.reason }}
+                                        </td>
+                                        <td class="date">
+                                            <div class="medium">{{ row.start_date|date:"d M Y" }}</div>
+                                        </td>
+                                        <td class="date">
+                                            <div class="medium">{{ row.end_date|date:"d M Y" }}</div>
+                                        </td>
+                                        <td class="date">
+                                            <div class="medium">{{ row.created_at|date:"d M Y" }}</div>
+                                        </td>
+                                        <td>
+                                            {{ row.total }}
+                                        </td>
+                                        <td>
+                                            {% if row.tl_id %}
+                                            {{ row.tl.first_name }} {{ row.tl.last_name }}
+                                            {% else %}
+                                            <span>Not Available</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if row.approval_status == 'pending' %}
+                                            <i class="fas fa-clock text-warning"><span class="text-dark"> TL </span></i>
+                                            <i class="fas fa-clock text-warning"><span class="text-dark">Manager</span></i>
+                                            {% endif %}
+                                            {% if row.manager_approval == 'approved' and row.tl_approval == 'approved' %}
+                                                <i class="fas fa-check text-success"><span class="text-dark">TL </span></i>
+                                                <i class="fas fa-check-double text-success">Approved</i>
+
+                                                
+                                                {% else %}
+                                                    {% if row.manager_approval == 'approved' and row.tl_approval == 'pending' %}
+                                                    <i class="fas fa-clock text-warning"><span class="text-dark"> TL </span></i>
+                                                    <i class="fas fa-check-double text-success">Approved</i>
+                                                    {% endif %}
+
+                                                    {% if row.tl_approval == 'approved' and row.manager_approval == 'pending' %}
+                                                    <i class="fas fa-check text-success"><span class="text-dark">TL </span></i>
+                                                    <i class="fas fa-clock text-warning"><span class="text-dark">Manager</span></i>
+                                                    {% endif %}
+
+                                                    {% if row.tl_approval == 'approved' and row.manager_approval == 'rejected' %}
+                                                    <i class="fas fa-check text-success"><span class="text-dark">TL </span></i>
+                                                    <span><i class="fas fa-times text-danger text-capitalize"> Manager Rejected</i></span>
+                                                    {% endif %}
+                                                   
+                                            {% endif %}
+                                            {% if row.tl_approval == 'rejected' %}
+                                            <span><i class="fas fa-times text-danger text-capitalize"> TL Rejected</i></span>
+
+                                            {% endif %}
+                                            
+                                            {% if row.approval_status == None %}
+                                            <span class="badge badge-pill badge-secondary" style="border-radius: 0;">None</span>
+                                            {% endif %}
+                                        </td>
+                                        <td align="left">
+                                              
+                                            
+                                            <a href="{% url 'emp_leaves_show' row.id %}"  title="View"> <i class="fas fa-eye fa-lg text-dark"></i>&nbsp;&nbsp;&nbsp;</a>
+                                            {% if row.approval_status != 'rejected' and row.approval_status != 'approved' %}
+                                            <a href="{% url 'emp_leaves_update' row.id %}"  title="Edit"> <i class="fas fa-edit fa-lg text-dark"></i>&nbsp;</a>
+                                            {% endif %}
+                                            <!-- <form method="post" action="" style="display: inline;"><button class="float-right btn-sm-0 btn-danger" type="submit" title="Remove" onclick="return confirm('Are you sure want to delete?')"><i class="fas fa-md fa-trash"></i></button>
+                                                {% csrf_token %}
+                                            </form> -->
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="9" style="text-align: center">No record to show</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col text-right">
+                                {% include 'components/paginator.html' %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    {% include 'components/forbidden.html' %}
+     {% endif %}
+     {% else %}
+     {% include 'components/401.html' %}
+     {% endif %}
+{% endblock %}

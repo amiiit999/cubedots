@@ -1,0 +1,35 @@
+
+
+<html>
+    <h1>Homepage</h1>
+    result = {{object}}
+    {% for row in objectd %}
+        <div class="section">
+            <h4><a href="#" class="section_toggle"></a></h4>
+            <table class="table table-condensed">
+               id =  {{row.id}} <br>
+               taskiID =  {{row.taskid}} <br>
+               name =  {{row.name}} <br>
+                parent id - {{row.parent_id}}
+                user id - {{row.user_id}}
+            </table>
+        </div>
+    
+    {% endfor %}
+    <h1>2nd </h1>
+    
+        <div class="section">
+            <h4><a href="#" class="section_toggle"></a></h4>
+            <table class="table table-condensed">
+                id =  {{object.id}} <br>
+                taskiID =  {{object.taskid}} <br>
+                name =  {{object.name}} <br>
+                 parent id - {{object.parent_id}}
+                 user id - {{object.user_id}}
+            </table>
+        </div>
+    
+    
+    
+    
+    </html>

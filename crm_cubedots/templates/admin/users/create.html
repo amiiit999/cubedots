@@ -1,0 +1,35 @@
+{% extends 'layouts/index.html' %}
+{% block content %}
+{% load static %}
+
+{% if user.is_authenticated %}
+    {% if user.is_staff == 1 and user.groups.all.0.name == "admin" or user.role == 'admin' or user.role == 'administrator' %}
+
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-info text-white"><b>Add New User</b>
+
+                    <a class="btn btn-sm btn-danger float-right" href="{% url 'admin_user_index' %}"> Back</a>
+                </div>
+               
+                <div class="card-body text-left">
+                    <form action="{% url 'admin_user_store' %}" method="POST">
+                    {% csrf_token %}
+                    {% include 'admin/users/_formAdd.html' %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+{% include 'components/forbidden.html' %}
+ 
+ {% endif %}
+ {% else %}
+ {% include 'components/401.html' %}
+ {% endif %}
+{% endblock %}

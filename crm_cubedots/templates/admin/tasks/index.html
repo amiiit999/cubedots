@@ -1,0 +1,332 @@
+{% extends 'layouts/index.html' %}
+{% block content %}
+{% load static %}
+{% if user.is_authenticated %}
+    {% if user.is_staff == 1 and user.groups.all.0.name == "admin" or user.role == 'admin' or user.role == 'administrator' %}
+<div class="container-fluid mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            {% include "components/validation_alert.html" %}
+            <div class="card">
+                <div class="card-header bg-info text-white"><b>Tasks of Project {% if project_add %}
+                    "{{project_add.name}}"                             
+               </b> <a class="btn  btn-sm btn-dark"
+                        href="{% url 'admin_task_create' project_add.id %}"><i class="fas fa-plus-circle"></i> Add New Task</a>
+                        {% endif %}
+                        <!---
+                <a class="btn-  btn-sm btn-danger" href=""> Trashed Tasks</a>
+                -->
+                    <a class="btn btn-sm btn-danger float-right" href="{% url 'project_index' %}"> Back</a>
+
+                </div>
+
+                <div class="card-body">
+                    {% if project %}
+                        <div class="row">
+                           
+                            <div class="col-md-6">
+                                <div class="form-group">   
+                                    <form method="get" action="{% url 'admin_tasks_search' project.id %}">                           
+                                    <input class="form-control" type="text" name="search" id="id_q"
+                                            placeholder="Type text here" required />
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+
+                                    <button type="submit" class="btn btn-sm0 btn-secondary"><i class="fas fa-search"></i>
+                                        Search</button>
+                                    <a class="btn btn-sm0 btn-danger" href="{% url 'admin_task_index' project.id %}" title=""><i
+                                            class="fa fa-times"></i> </a>
+                                        </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="table-responsive border-info">
+                        <table id="taskDataTable" class="table table-sm table-bordered table-hover">
+                            <thead class="table-info">
+                                <tr>
+                                    <th width="3%">
+                                        <!---
+                                        <div class="btn-group dropright">
+                                           
+                                            <input type="checkbox" onchange="checkAll(this)" name="chk[]" />
+                                            <div class="btn btn-sm btn-default dropdown-toggle dropdown-toggle-split"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <span class="sr-only">Toggle Dropdown</span>
+                                            </div>
+                                            
+                                            <div class="dropdown-menu">
+                                                <button class="dropdown-item" id="delete_unit_id_check" type="submit"
+                                                onclick="bulkActions('taskDataTable','delete');"><i
+                                                class="fas fa-trash"></i> Delete</button>                                 
+                                            </div>
+                                            
+                                        </div>
+                                        ---->
+                                        <a class="text-decoration-none text-dark" href="">#</a>
+                                    </th>
+
+                                    <th width="4%"><a class="text-decoration-none text-dark" href="">ID</a></th>
+                                    <th width="10%"><a class="text-decoration-none text-dark" href="">TaskID</a></th>
+                                    <th width="10%"><a class="text-decoration-none text-dark" href="">Name</a></th>
+                                    <th width="8%"><a class="text-decoration-none text-dark" href="">Project</a></th>                          
+                                    <th width="8%"><a class="text-decoration-none text-dark" href="">Department</a></th>
+                                    <th width="10%"><a class="text-decoration-none text-dark" href="">User</a></th>
+                                    <th width="10%"><a class="text-decoration-none text-dark" href="">Status</a></th>
+                                    <th width="5%" title="Process status"><a class="text-decoration-none text-dark"
+                                            href="">P.Status</a></th>
+                                    <th width="10%"><a class="text-decoration-none text-dark" href="">Created At</a>
+                                    </th>
+                                    <th width="5%"><a class="text-decoration-none text-dark" href="">Task Priority</a></th>  
+                                    <th width="17%" class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {% for row in page_obj %}
+
+                                <tr>
+                                    <td scope="row">{{ forloop.counter }}</td>
+
+                                    <td>{{row.id}}</td>
+                                    <td>
+                                        {{row.taskid}}
+                                    </td>
+                                    <td>
+                                        {{row.name}}
+                                    </td>
+                                    <td>
+                                        {{row.project.name}}
+                                    </td>
+                                    <td>
+                                        {{row.department.name}}
+                                    </td>
+                                    <td>
+                                        {{row.user.first_name}} {{row.user.last_name}}
+                                    </td>
+                                    <td>
+                                        {% if row.status == 'active' %}
+                                        <span class="badge badge-pill badge-info">{{ row.status }}</span>
+                                        {% else %}
+                                        <span class="badge badge-pill badge-danger">{{ row.status }}</span>
+                                        {% endif %}
+
+                                    </td>
+                                    <td>
+                                        {% if row.process_status == 'assigned' %}
+                                        <span class="badge badge-pill badge-info">{{ row.process_status }}</span>
+                                        
+                                        {% else %}
+                                        <span class="badge badge-pill badge-secondary">{{ row.process_status }}</span>
+                                        {% endif %}
+                                        
+                                    </td>
+
+                                    <td class="date">
+                                        <div class="medium">
+                                            {% if row.created_at %}
+                                            <span>{{ row.created_at|date:"d M Y" }}</span>
+                                            {% else %}
+                                            <span>Not Available</span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if row.priority == 'extreme high' %}
+                                        <span class="badge badge-pill badge text-white extreme_high_task" style="background-color: #8C370D;">{{ row.priority }}</span> 
+                                        {% endif %}
+
+                                        {% if row.priority == 'high' %}
+                                        <span class="badge badge-pill badge-danger">{{ row.priority }}</span> 
+                                        {% endif %}
+
+                                        {% if row.priority == 'medium' %}
+                                        <span class="badge badge-pill badge-warning">{{ row.priority }}</span>
+                                        {% endif %}
+
+                                        {% if row.priority == 'low' %}
+                                        <span class="badge badge-pill badge-primary">{{ row.priority }}</span>
+                                        {% endif %}
+
+                                        {% if row.priority == null %}
+                                        <span class="badge badge-pill badge-secondary">Not Available</span>
+                                        {% endif %}
+                                    </td>
+                                    <td align="right">
+
+                                        {% if row.children %}
+
+                                        <button class="btn btn-sm btn-info" type="button" data-toggle="collapse"
+                                            data-target="#collapseExample{{ row.id }}" aria-expanded="false"
+                                            aria-controls="collapseExample{{ row.id }}">
+                                            <i class="fas fa-chevron-circle-down"></i>
+                                        </button>
+                                        
+                                        {% endif %}
+                                        
+
+                                        <button type="button" class="btn-sm0 text-dark" data-toggle="modal"
+                                            data-target="#myModal" data-whatever="">
+                                            <i class="far fa-clone"></i></button>
+
+
+                                        <a href="{% url 'admin_task_show' row.id %}" title="View"> <i
+                                                class="fas fa-eye fa-lg text-dark">&nbsp;</i></a>
+
+                                        <a href="{% url 'admin_task_update' row.id %}" title="Edit"> <i
+                                                class="fas fa-edit fa-lg text-dark"></i>&nbsp;</a>
+
+                                        <form method="post" action="{% url 'admin_task_delete' row.id %}" style="display: inline;"><button class="float-right btn-sm-0 btn-danger" type="submit" title="Remove" onclick="return confirm('Are you sure want to delete?')"><i class="fas fa-md fa-trash"></i></button>
+                                            {% csrf_token %}
+                                        </form>
+
+                                    </td>
+                                </tr>
+
+                                <tr class="table-info">
+                                    <td colspan="12" class="p-0">
+                                        <div class="collapse" id="collapseExample{{row.id}}">
+                                            <table class="table table-sm table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="3%">#</th>
+                                                        <th width="4%"><a class="text-decoration-none text-dark" href="">ID</a></th>
+                                                        <th width="10%"><a class="text-decoration-none text-dark" href="">TaskID</a></th>
+                                                        <th width="10%"><a class="text-decoration-none text-dark" href="">Name</a></th>
+                                                        <th width="8%"><a class="text-decoration-none text-dark" href="">Project</a></th>                          
+                                                        <th width="8%"><a class="text-decoration-none text-dark" href="">Department</a></th>
+                                                        <th width="10%"><a class="text-decoration-none text-dark" href="">User</a></th>
+                                                        <th width="5%"><a class="text-decoration-none text-dark" href="">Status</a></th>
+                                                        <th width="10%" title="Process status"><a class="text-decoration-none text-dark"
+                                                                href="">P.Status</a></th>
+                                                        <th width="10%"><a class="text-decoration-none text-dark" href="">Created At</a></th>  
+                                                        <th width="5%"><a class="text-decoration-none text-dark" href="">Task Priority</a></th>  
+                                                        
+                                                        <th width="17%" align="right">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+  
+                                                    {% for subtask in row.children %}
+                                                    {% if subtask.parent_id == row.id %}
+
+                                                    <tr>
+                                                        <td scope="row">{{ forloop.counter }}</td>
+                                                        <td scope="row">{{subtask.id}}</td>
+                                                        <td>
+                                                            {{subtask.taskid}}
+                                                        </td>
+
+                                                        <td>
+                                                            {{subtask.name}}
+                                                        </td>
+                                                        <td>
+                                                            {{subtask.project.name}}
+                                                        </td>
+                                                        <td>
+                                                            {{subtask.department.name}}
+                                                        </td>
+                                                        <td>
+                                                            {{subtask.user.first_name}} {{subtask.user.last_name}}
+                                                        </td>
+                                                        <td>
+                                                            {% if subtask.status == 'active' %}
+                                                            <span class="badge badge-pill badge-info">{{ subtask.status }}</span>
+                                                            {% else %}
+                                                            <span class="badge badge-pill badge-danger">{{ subtask.status }}</span>
+                                                            {% endif %}
+                    
+                                                        </td>
+                                                        <td>
+                                                            {% if subtask.process_status == 'assigned' %}
+                                                            <span class="badge badge-pill badge-info">{{ row.process_status }}</span>
+                                                            {% else %}
+                                                            <span class="badge badge-pill badge-secondary">{{ row.process_status }}</span>
+                                                            {% endif %}
+                                                        </td>
+                    
+                                                        <td class="date">
+                                                            <div class="medium">
+                                                                {% if subtask.created_at %}
+                                                                <span>{{ subtask.created_at|date:"d M Y" }}</span>
+                                                                {% else %}
+                                                                <span>Not Available</span>
+                                                                {% endif %}
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {% if subtask.priority == 'extreme high' %}
+                                                            <span class="badge badge-pill badge text-white extreme_high_task" style="background-color: #8C370D;">{{ subtask.priority }}</span> 
+                                                            {% endif %}
+
+                                                            {% if subtask.priority == 'high' %}
+                                                            <span class="badge badge-pill badge-danger">{{ subtask.priority }}</span> 
+                                                            {% endif %}
+                    
+                                                            {% if subtask.priority == 'medium' %}
+                                                            <span class="badge badge-pill badge-warning">{{ subtask.priority }}</span>
+                                                            {% endif %}
+                    
+                                                            {% if subtask.priority == 'low' %}
+                                                            <span class="badge badge-pill badge-primary">{{ subtask.priority }}</span>
+                                                            {% endif %}
+                    
+                                                            {% if subtask.priority == null %}
+                                                            <span class="badge badge-pill badge-secondary">Not Available</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td align="left">
+                                                        <a href="{% url 'admin_task_show' subtask.id %}" title="View"> <i
+                                                                class="fas fa-eye fa-lg text-dark">&nbsp;</i></a>
+                
+                                                        <a href="{% url 'admin_task_update' subtask.id %}" title="Edit"> <i
+                                                                class="fas fa-edit fa-lg text-dark"></i>&nbsp;</a>
+                
+                                                        <form method="post" action="{% url 'admin_task_delete' subtask.id %}" style="display: inline;"><button class="float-right btn-sm-0 btn-danger" type="submit" title="Remove" onclick="return confirm('Are you sure want to delete?')"><i class="fas fa-md fa-trash"></i></button>
+                                                            {% csrf_token %}
+                                                        </form>
+                                                        </td>
+                                                    </tr>
+                                                    {% endif %}
+                                                    {% endfor %}
+
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                {% empty %}
+                                <tr>
+                                    <td colspan="11" style="text-align: center">No record to show</td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            {% include 'components/paginator.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+{% include 'components/forbidden.html' %}
+ 
+ {% endif %}
+ {% else %}
+ {% include 'components/401.html' %}
+ {% endif %}
+
+{% endblock %}

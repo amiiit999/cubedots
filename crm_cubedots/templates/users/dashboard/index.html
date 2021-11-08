@@ -1,0 +1,134 @@
+{% extends 'layouts/user_layout.html' %}
+{% block content %}
+{% load static %}
+{% if user.is_authenticated %}
+{% include "components/validation_alert.html" %}
+
+    {% if user.role == 'user' %}
+    <p class="ml-4 text-dark">Welcome !! 
+        {% if user.is_authenticated %}
+            {{ user.first_name }}
+            {% else %}
+            User
+            {% endif %}
+    </p><br>
+    
+    <h3 class="ml-3 p-0" style="color:rgb(87, 86, 86)"><i class="fas fa-tachometer-alt pr-3"></i>Dashboard </h3>
+    <div class="row m-0 p-0">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-info hover-expand-effect">
+                <div class="icon">
+                    <a href="{% url 'user_tasks' %}"><i class="fas fa-tasks"></i></a>
+                </div>
+                <div class="content">
+                    <div class="text-white"><a href="{% url 'user_tasks' %}" class="text-white"><b>Tasks</b></a></div>
+                   <a href="#" class="text-white">Click on icon</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-primary hover-expand-effect">
+                <div class="icon">
+                    <a href="{% url 'hr_emlpoyees_attendence_index' %}"><i class="fas fa-fingerprint"></i></a>
+                </div>
+                <div class="content">
+                    <div class="text-white"><b>Attendence</b></div>
+                    <a href="#" class="text-white">Click on icon</a>
+                    <!-- <div class="number count-to" data-from="0" data-to="257" data-speed="1000" data-fresh-interval="20">257</div> -->
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-warning hover-expand-effect">
+                <div class="icon">
+                    <a href="{% url 'emp_leaves_dashboard' %}"><i class="fas fa-calendar-check"></i></a>
+                </div>
+                <div class="content">
+                    <div class="text-white"><b>Leaves</b></div>
+                    <a href="#" class="text-white">Click on icon</a>
+                    <!-- <div class="number count-to" data-from="0" data-to="243" data-speed="1000" data-fresh-interval="20">243</div> -->
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 pr-2">
+            <div class="info-box bg-success hover-expand-effect">
+                <div class="icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="content">
+                    <div class="text-white"><b>Holidays</b></div>
+                    <a href="#" class="text-white">Click on icon</a>
+                    <!-- <div class="number count-to" data-from="0" data-to="1225" data-speed="1000" data-fresh-interval="20">1225</div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="ml-3 p-0" style="color:rgb(87, 86, 86)"><i class="fas fa-tasks pr-3"></i>Tasks</h3>
+        <div class="row m-0 p-0">
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="card border text-white bg-info mb-4" style="box-shadow: 0 0 6px rgb(0 0 0 / 40%); border-radius: 0;">
+                    <div class="card-body m-0 py-2">
+                        <div class="row">                          
+                            <div class="col m-0 p-0">
+                                <div class="numbers">
+                                    <p class="text-white text-center">Total Active Projects</p>
+                                    <h3 class="text-center"><a href="{% url 'user_tasks' %}" class="text-white">{{total_active_projects}}</a></h3>                                 
+                                </div>
+                            </div>
+                        </div>               
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="card border text-white bg-secondary mb-4" style="box-shadow: 0 0 6px rgb(0 0 0 / 40%); border-radius: 0;">
+                    <div class="card-body m-0 py-2">
+                        <div class="row">                          
+                            <div class="col m-0 p-0">
+                                <div class="numbers">
+                                    <p class="text-white text-center">Total Compt. Tasks</p>
+                                    <h3 class="text-center text-white">{{total_completed_tasks}}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="card border text-white bg-success border mb-4" style="box-shadow: 0 0 6px rgb(0 0 0 / 40%); border-radius: 0;">
+                    <div class="card-body m-0 py-2">
+                        <div class="row">                          
+                            <div class="col m-0 p-0">
+                                <div class="numbers">
+                                    <p class="text-white text-center">Total Active Tasks</p>
+                                    <h3 class="text-center text-white">{{total_active_tasks}}</h3>
+                                </div>
+                            </div>
+                        </div>                                     
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="card border text-white bg-danger mb-4" style="box-shadow: 0 0 6px rgb(0 0 0 / 40%); border-radius: 0;">
+                    <div class="card-body m-0 py-2">
+                        <div class="row">                          
+                            <div class="col m-0 p-0">
+                                <div class="numbers">
+                                    <p class="text-white text-center">Total Rejected Tasks</p>
+                                    <h3 class="text-center text-white">{{total_rejected_tasks}}</h3>
+                                </div>
+                            </div>
+                        </div>                                          
+                    </div>
+                </div>
+            </div> 
+        </div>
+     
+    {% else %}
+    {% include 'components/forbidden.html' %}
+     
+     {% endif %}
+     {% else %}
+     {% include 'components/401.html' %}
+     {% endif %}
+    {% endblock %}

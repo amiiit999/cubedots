@@ -1,0 +1,102 @@
+{% extends 'layouts/user_layout.html' %}
+{% block content %}
+{% load static %}
+{% if user.is_authenticated %}
+    {% if user.role == 'tl' or user.role == 'qa' or user.role == 'administrator' or user.role == 'hr_admin' %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                   <b>Leave Approval Details : </b>
+
+                    <a class="btn btn-sm btn-danger float-right" href="{% url 'approve_leaves_index' %}"> Back</a>
+                </div>
+
+                <div class="card-body">
+                    <div class="col-md-12">
+                            <div class="table-responsive">
+                            <table class="table table-bordered table-sm">
+                                <tr>
+                                    <th width="30%">Employee Name : </th>
+                                    <td>{{data.user.first_name}} {{data.user.last_name}}</td>
+                                </tr>
+                                <tr>
+                                    <th width="30%">Leave Type : </th>
+                                    <td>{{data.leaves_type.name}}</td>
+                                </tr>
+                              
+                                <tr>
+                                    <th>Reason : </th>
+                                    <td>{{data.reason}}</td>
+                                </tr>
+
+                                <tr>
+                                    <th>From : </th>
+                                    <td>{{ data.start_date|date:"d M Y" }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th>To : </th>
+                                    <td>{{ data.end_date|date:"d M Y" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Manager Name : </th>
+                                    <td>{{data.manager.first_name}} {{data.manager.last_name}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Team Leader : </th>
+                                    <td>{{data.tl.first_name}} {{data.tl.last_name}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Department Name : </th>
+                                    <td>{{data.department.name}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Applied At : </th>
+                                    <td>{{ data.created_at|date:"d M Y" }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th>No. of leaves : </th>
+                                    <td>{{data.total}}</td>
+                                </tr>
+                                
+
+                                <tr>
+                                    <th>Approval Status : </th>
+                                    <td>
+                                        {% if data.approval_status == 'pending' %}
+                                        <span class="badge badge-pill badge-warning text-capitalize" style="border-radius: 0;">{{ data.approval_status }}</span>
+                                        {% endif %}
+                                        {% if data.approval_status == 'approved' %}
+                                        <span class="badge badge-pill badge-success text-capitalize" style="border-radius: 0;">{{ data.approval_status }}</span>
+                                        {% endif %}
+                                        {% if data.approval_status == 'rejected' %}
+                                        <span class="badge badge-pill badge-danger text-capitalize" style="border-radius: 0;">{{ data.approval_status }}</span>
+                                        {% endif %}
+                                        {% if data.approval_status == None %}
+                                        <span class="badge badge-pill badge-secondary text-capitalize" style="border-radius: 0;">None</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                
+                            </table>
+                            </div>
+                        </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+{% include 'components/forbidden.html' %}
+    
+    {% endif %}
+    {% else %}
+    {% include 'components/401.html' %}
+    {% endif %}
+{% endblock %}

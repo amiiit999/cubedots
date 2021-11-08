@@ -1,0 +1,40 @@
+{% extends 'layouts/user_layout.html' %}
+{% block content %}
+{% load static %}
+
+{% if user.is_authenticated %}
+    {% if user.role == 'tl' or user.role == 'qa' %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-info text-white"><b>Apply Leave(s)</b>
+
+                    <a class="btn btn-sm btn-danger float-right" href=""> Back</a>
+                </div>
+               
+                <div class="card-body text-left">
+                    <form action="{% url 'moni_tasks_apply_leaves_store' %}" method="POST">
+                        {% csrf_token %}
+                    {% include 'moni_task/leaves/apply_leaves/_form.html' %}
+                    <div class="col-md-12 text-center">
+                        <button type="submit" class="btn btn-sm0 btn-secondary" name="Search">Submit</button>
+                
+                        <a class="btn btn-sm0 btn-danger" href="" title="">Cancel </a>
+                
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+{% include 'components/forbidden.html' %}
+    
+    {% endif %}
+    {% else %}
+    {% include 'components/401.html' %}
+    {% endif %}
+{% endblock %}

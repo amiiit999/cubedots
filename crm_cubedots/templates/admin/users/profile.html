@@ -1,0 +1,201 @@
+{% extends 'layouts/index.html' %}
+{% block content %}
+{% load static %}
+{% if user.is_authenticated %}
+{% if user.is_staff == 1 and user.groups.all.0.name == 'administrator' or user.role == 'administrator' or user.role == 'admin' %}
+
+
+<div class="container mt-5 mx-auto mb-5">
+  {% include "components/validation_alert.html" %}
+  <div class="col-md-10 mx-auto">
+
+    <div class="row border mx-5" style="-webkit-box-shadow: 0px 0px 4px 0px rgba(50, 50, 50, 0.79);
+        -moz-box-shadow:    0px 0px 4px 0px rgba(50, 50, 50, 0.79);
+        box-shadow:         0px 0px 4px 0px rgba(50, 50, 50, 0.79); background-color:#fff;">
+
+      <div class="col-md-11">
+
+        <h2 class="text-center mt-4 text-dark">Employee Details</h2>
+
+      </div>
+      <div class="container-fluid border mt-3 mx-5" style="box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.46);
+            -webkit-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.46);
+            -moz-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.46);">
+        <div class="row my-3">
+          <div class="col pl-3 text-secondary text-capitalize">
+            <h4 class="text-secondary"><b>{{form.instance.first_name}} {{form.instance.last_name}}</b></h4><small><span>
+                <i> Last Login: {{form.instance.last_login}}</i></span></small> <br><br>
+            <span><i class="fas fa-user-cog fa-2x"></i><b> &nbsp;&nbsp; Role</b> </span> <span
+              class="text-uppercase mx-5">: {{form.instance.role}}</span><br>
+            <span><i class="fas fa-user-tie fa-2x"></i> <b>&nbsp; &nbsp;&nbsp;Designation </b>:
+              {{form.instance.designation}}</span><br>
+            <span><i class="fas fa-building fa-2x"></i> <b>&nbsp;&nbsp;&nbsp; Department </b>:
+              {{form.instance.department}}</span>
+
+
+          </div>
+          <div class="col">
+
+            <div class="float-right">
+              
+             
+              <form action="{% url 'admin_user_profile' form.instance.id %}" method="POST" class="post-form"
+                enctype="multipart/form-data">
+                {% csrf_token %}
+                {% if form.instance.avatar %}
+                <div class="container-profilepic card rounded-circle overflow-hidden">
+                  <img src="{{form.instance.avatar.url}}" width="150" height="150" alt=""
+                  class="rounded-circle border border-dark" />
+                  <div class="middle-profilepic text-center card-img-overlay d-none flex-column justify-content-center">
+                    
+                      <div class="text-profilepic text-white">
+                          <i class="fas fa-camera"></i>
+                          <div class="text-profilepic"><label for="upload-photo">Change Pic</label> {{ form.avatar }}</div>
+                      </div>
+                  </div>
+              </div>
+              {% else %}
+              {% if form.instance.gender == 'male' %}
+              
+                <div class="container-profilepic card rounded-circle overflow-hidden">
+                  <img src="{% static 'images/avatar/male_avatar.jpg' %}" width="150" height="150" alt=""
+                class="rounded-circle float-right" />
+                  <div class="middle-profilepic text-center card-img-overlay d-none flex-column justify-content-center">
+                    
+                      <div class="text-profilepic text-white">
+                          <i class="fas fa-camera"></i>
+                          <div class="text-profilepic"><label for="upload-photo">Change Pic</label> {{ form.avatar }}</div>
+                      </div>
+                  </div>
+              </div>
+              {% endif %}
+              {% if form.instance.gender == 'female' %}
+              <div class="container-profilepic card rounded-circle overflow-hidden">
+                <img src="{% static 'images/avatar/female_avatar.jpg' %}" width="150" height="150" alt=""
+              class="rounded-circle float-right" />
+                <div class="middle-profilepic text-center card-img-overlay d-none flex-column justify-content-center">
+                  
+                    <div class="text-profilepic text-white">
+                        <i class="fas fa-camera"></i>
+                        <div class="text-profilepic"><label for="upload-photo">Change Pic</label> {{ form.avatar }}</div>
+                    </div>
+                </div>
+            </div>
+
+              {% endif %}
+              {% endif %}
+            </form>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid border mt-3 mx-5" style="box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.46);
+            -webkit-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.46);
+            -moz-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.46);">
+        <div class="row mt-3">
+          <div class="col-md-12 table-responsive-sm">
+            <table id="classTable" class="table table-bordered text-secondary text-capitalize mx-auto">
+              <tbody>
+
+
+                <tr>
+                  <td><strong>Email:</strong></td>
+                  <td><span class="text-lowercase">{{form.instance.email}}</span></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Gender:</strong></td>
+                  <td>{{form.instance.gender}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Contact No :</strong></td>
+                  {% if form.instance.contact_no %}
+                  <td>{{form.instance.contact_no}}</td>
+                  {% else %}
+                  <td>Not Available </td>
+                  {% endif %}
+                </tr>
+                <tr>
+                  <td><strong>status :</strong></td>
+                  <td>{{form.instance.status}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Manager Name :</strong></td>
+                  <td>{{form.instance.manager_name}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Team Name :</strong></td>
+                  <td>{{form.instance.team_name}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Team Leader :</strong></td>
+                  <td>{{form.instance.team_leader}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Skills :</strong></td>
+                  <td>{{form.instance.skills}}</td>
+                </tr>
+                <td><strong>Qualifications :</strong></td>
+                <td>{{form.instance.qualifications}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Blood Group :</strong></td>
+                  <td>{{form.instance.blood_group}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Date of Joined :</strong></td>
+                  <td>{{form.instance.date_joined}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Local Address :</strong></td>
+                  <td>{{form.instance.local_address}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Permanent Address :</strong></td>
+                  <td>{{form.instance.permanent_address}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Pin Code :</strong></td>
+                  <td>{{form.instance.postal_code}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <br>
+            {% if user.is_staff == 1 and user.groups.all.0.name == 'administrator' or user.role == 'administrator' or user.role == 'hr' or user.role == 'hr_admin' %}
+
+
+            <form method="post" action="{% url 'reset_password' form.instance.id %}"
+              style="display: inline;"><button class="btn btn-primary" type="submit" title="Remove"
+                onclick="return confirm('Are you sure want to reset?')">Reset Password</button>
+              {% csrf_token %}
+            </form>
+            <br><br>
+            {% endif %}
+
+
+          </div>
+
+        </div>
+      </div>
+      <div class="col text-center mb-5 mt-4">
+        <a class="btn btn-primary" href="{% url 'admin_user_update' form.instance.id %}" title="Edit">Update</a>
+        {% if user.is_staff == 1 and user.groups.all.0.name == 'administrator' or user.role == 'administrator' or user.role == 'hr_admin' %}
+        <a href="{% url 'admin_user_delete' form.instance.id %}" class="btn btn-danger mx-5"
+          onclick="return confirm('Are you sure want to delete?')">Delete</a>
+        {% endif %}
+        <a class="btn btn-secondary" href="{% url 'admin_user_index' %}" title="Back">Back</a>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+{% include 'components/forbidden.html' %}
+ 
+ {% endif %}
+ {% else %}
+ {% include 'components/401.html' %}
+ {% endif %}
+{% endblock %}

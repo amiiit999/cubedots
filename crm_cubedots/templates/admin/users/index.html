@@ -1,0 +1,169 @@
+{% extends 'layouts/index.html' %}
+{% block content %}
+{% load static %}
+
+{% if user.is_authenticated %}
+    {% if user.is_staff == 1 and user.groups.all.0.name == "admin" or user.role == 'admin' or user.role == 'administrator' %}
+
+    <div class="container mt-3 col">
+        <div class="row justify-content-center">
+            <div class="col"><br>
+               
+                <div class="card">
+                    {% include "components/validation_alert.html" %}
+                    <div class="card-header bg-info text-white" style="border-radius: 0;"><b>USERS</b> 
+                        {% if user.is_staff == 1 and user.groups.all.0.name == "admin" %}
+                         <a class="btn  btn-sm btn-dark" href="{% url 'admin_user_create' %}"><i class="fas fa-plus-circle"></i> Add New User</a>
+                        {% endif %}
+                        </div>
+    
+                    <div class="card-body">
+                        
+                            <div class="row ml-5">                          
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <form method="get" action="{% url 'search_user' %}">
+                                            <input class="form-control" type="text" name="search" id="id_q" placeholder="Type text here" required/>  
+                                    </div>
+                                </div>
+        
+        
+                                <div class="col-md-2">
+                                    <div class="form-group">
+        
+                                        <button type="submit" class="btn btn-sm0 btn-secondary"><i class="fas fa-search"></i> Search</button>
+                                        <a class="btn btn-sm0 btn-danger" href="{% url 'admin_user_index' %}" title=""><i class="fa fa-times"></i> </a>
+                                    </form>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                        <div class="table-responsive bg-white" style="-webkit-box-shadow: 0px 0px 4px 0px rgba(50, 50, 50, 0.79);
+                        -moz-box-shadow:    0px 0px 4px 0px rgba(50, 50, 50, 0.79);
+                        box-shadow:         0px 0px 4px 0px rgba(50, 50, 50, 0.79); background-color:#fff;">
+                            <table class="table table-sm table-bordered table-hover">
+                                <thead class="table-info" >
+                                    <tr>
+                                        <th width="2%"><a class="text-decoration-none text-dark" href="">#</a></th>                                      
+                                        <th width="2%"><a class="text-decoration-none text-dark" href="">ID</a></th>
+                                        <th width="5%"><a class="text-decoration-none text-dark" href="">Image</a></th>
+                                        <th width="10%"><a class="text-decoration-none text-dark" href="">Full Name</a></th>
+                                        <th width="13%"><a class="text-decoration-none text-dark" href="">Email</a></th>
+                                        <th width="5%"><a class="text-decoration-none text-dark" href="">Gender</a></th>
+                                        <th width="5%"><a class="text-decoration-none text-dark" href="" >Department</a></th>
+                                        <th width="7%"><a class="text-decoration-none text-dark" href="">Role</a></th> 
+                                        <th width="10%"><a class="text-decoration-none text-dark" href="">Team Leader</a></th>
+                                        <th width="10%"><a class="text-decoration-none text-dark" href="">Contact No.</a></th>
+                                        <th width="10%"><a class="text-decoration-none text-dark" href="">Date of Joined</a></th>
+                                        <th width="9%"><a class="text-decoration-none text-dark" href="">Profile Status</a></th>
+                                        <th width="12%" align="right">Action</th>
+                                       
+                                       
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                    {% for row in page_obj %}
+                                    <tr>
+                                        <td scope="row">{{ forloop.counter }}</td>
+                                        <td>{{ row.id }}</td>
+                                        <td>
+                                            {% if row.avatar %}
+                                            <img src="{{row.avatar.url}}" width="40" height="40" alt="" class="rounded-circle border border-dark" />
+                                            {% else %}
+                                                {% if row.gender == 'male' %}   
+                                                <img src="{% static 'images/avatar/male_avatar.jpg' %}" width="40" height="40" alt="" class="rounded-circle" />
+                                                {% endif %}
+                                                {% if row.gender == 'female' %}   
+                                                <img src="{% static 'images/avatar/female_avatar.jpg' %}" width="40" height="40" alt="" class="rounded-circle" />
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                        <td><a href="{% url 'admin_user_profile' row.id %}" class="text-dark text-capitalize">{{ row.first_name}} {{ row.last_name}}</a></td>
+                                       
+                                        {% if row.email %}
+                                        <td>{{ row.email }}</td>
+                                        {% else %}
+                                        <td>Not Available</td>
+                                        {% endif %}
+
+                                        <td class="text-capitalize">{{ row.gender }}</td>
+                                        
+                                        {% if row.department %}
+                                        <td>{{ row.department.name }}</td>
+                                        {% else %}
+                                        <td>Not Available</td>
+                                        {% endif %}
+                                        <td class="text-uppercase">{{ row.role }}</td>
+
+                                       {% if row.team_leader %}
+                                        <td>{{ row.team_leader }}</td>
+                                        {% else %}
+                                        <td>Not Available</td>
+                                        {% endif %}
+
+                                        {% if row.contact_no %}
+                                        <td>{{ row.contact_no }}</td>
+                                        {% else %}
+                                        <td>Not Available</td>
+                                        {% endif %}
+
+                                        {% if row.date_joined %}
+                                        <td>{{ row.date_joined|date:"d M Y" }}</td>
+                                        {% else %}
+                                        <td>Not Available</td>
+                                        {% endif %}
+                                        
+                                        <td>
+                                            {% if row.approval_status == 'pending' %}
+                                            <span class="badge badge-pill badge-warning">{{ row.approval_status }}</span>
+                                            {% endif %}
+                                            {% if row.approval_status == 'completed' %}
+                                            <span class="badge badge-pill badge-info">{{ row.approval_status }}</span>
+                                            {% endif %}
+                                            {% if row.approval_status == None %}
+                                            <span class="badge badge-pill badge-secondary">None</span>
+                                            {% endif %}
+                                        </td>
+                                        
+                                               <td align="left">
+                                            <button type="button" class="btn btn-sm btn-default" title=""><i class="fa fa-circle"></i></button>
+                                            <a href="{% url 'admin_user_profile' row.id %}"  title="View"> <i class="fas fa-eye fa-lg text-dark"></i>&nbsp;</a>
+    
+                                            <a href="{% url 'admin_user_update' row.id %}"  title="Edit"> <i class="fas fa-edit fa-lg text-dark"></i>&nbsp;</a>
+                                            {% if user.is_staff == 1 and user.groups.all.0.name == "admin" or user.role == 'admin' or user.role == 'administrator' %}
+                                            <form method="post" action="{% url 'admin_user_delete' row.id %}" style="display: inline;"><button class="float-right btn-sm-0 btn-danger" type="submit" title="Remove" onclick="return confirm('Are you sure want to delete?')"><i class="fas fa-md fa-trash"></i></button>
+                                                {% csrf_token %}
+                                            </form>
+                                            {% endif %}
+                                            <!--
+                                             <form method="post" class="delete_form float" action="{% url 'project_destroy' row.id %}" style="display: inline"><button class="btn btn-sm btn-danger float-right" type="submit" title="Remove" onclick="return confirm('Are you sure want to delete?')"><i class="fas fa-trash"></i></button>
+                                                {% csrf_token %}
+                                            </form>
+                                            -->
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="16" style="text-align: center">No record to show</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col text-right">
+                                {% include 'components/paginator.html' %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    {% include 'components/forbidden.html' %}
+ {% endif %}
+ {% else %}
+ {% include 'components/401.html' %}
+ {% endif %}
+{% endblock %}

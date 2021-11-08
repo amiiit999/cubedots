@@ -1,0 +1,87 @@
+<div class="row text-left">
+    <div class="col-md-12 ">
+       
+        <div class="form-group">
+                    
+                    {% load crispy_forms_tags %}
+                    <div class="form-row">
+                        <div class="form-group col-md-4 mb-0">
+                          {{ form.first_name|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.last_name|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.manager_name|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.email|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.contact_no|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.team_name|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.role|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.status|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.gender|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.department|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.designation|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.team_leader|as_crispy_field }}
+                        </div>
+                        
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.local_address|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.permanent_address|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.postal_code|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.skills|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.qualifications|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.blood_group|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.date_of_birth|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.date_joined|as_crispy_field }}
+                        </div>
+                        
+                        <div class="form-group col-md-12 mb-0">
+                            {{ form.approval_status|as_crispy_field }}
+                        </div>
+                        
+    
+                    </div>  
+                    
+                    
+        </div>
+    </div>
+
+    <div class="col-md-12 text-center">
+        <button type="submit" class="btn btn-sm0 btn-secondary" name="Search">Update</button>
+
+        <a class="btn btn-sm0 btn-danger" href="{% url 'hr_employees' %}" title="">Cancel </a>
+
+    </div>
+</div>

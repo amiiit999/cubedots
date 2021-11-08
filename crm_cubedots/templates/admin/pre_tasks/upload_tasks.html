@@ -1,0 +1,70 @@
+{% extends 'layouts/index.html' %}
+{% block content %}
+{% load static %}
+
+{% if user.is_authenticated %}
+    {% if user.is_staff == 1 and user.groups.all.0.name == "admin" or user.role == 'admin' or user.role == 'administrator' %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-info text-white"><b>Upload Task</b>
+
+                    <a class="btn btn-sm btn-danger float-right" href="{% url 'pretasks_index' %}"> Back</a>
+                </div>
+
+                <div class="card-body text-left">
+
+                    <div class="row text-left">
+                        {% include "components/validation_alert.html" %}
+                    </div>
+
+                    
+                <form action="{% url 'pretask_upload_sheet_store' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                    <div class="row text-left">
+                    
+
+                        <div class="col-md-12">
+                            <strong>Last Task ID: {{preTask_last_id.id}}</strong>
+                            <hr>
+                        </div>
+                
+                        <div class="col-md-12">
+                            <strong><label for="">Excel Sheet Name</label></strong> <span class="text-danger">*</span>
+                            <div class="form-group">
+                                <input type="text" value="Calendar" class="form-control" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <strong><label for="">Excel file in XLSX Extension</label></strong> <span class="text-danger">*</span>
+                            <div class="form-group">  
+                                <input type="file" name="excel_sheet_file" class="border border-block" required>
+                            </div>    
+                            
+                        </div>
+                        
+                        <div class="col-md-12 text-center">
+                            <button type="submit" class="btn btn-sm0 btn-secondary" name="submit">Submit</button>
+
+                            <a class="btn btn-sm0 btn-danger" href="{% url 'pretasks_index' %}" title="">Cancel </a>
+
+                        </div>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+{% include 'components/forbidden.html' %}
+    
+    {% endif %}
+    {% else %}
+    {% include 'components/401.html' %}
+    {% endif %}
+{% endblock %}

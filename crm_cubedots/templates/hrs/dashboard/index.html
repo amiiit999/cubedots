@@ -1,0 +1,72 @@
+{% extends 'layouts/hr_layout.html' %}
+{% block content %}
+{% load static %}
+
+{% include "components/validation_alert.html" %}
+{% if user.is_authenticated %}
+    {% if user.is_staff == 1 and user.groups.all.0.name == 'administrator' or user.role == 'administrator' or user.role == 'hr' or user.role == 'hr_admin' %}
+    <p class="ml-4 text-dark">Welcome !! 
+        {% if user.is_authenticated %}
+            {{ user.first_name }}
+            {% else %}
+            User
+            {% endif %}
+    </p>
+    <h3 class="ml-3 p-0" style="color:rgb(87, 86, 86)"><i class="fas fa-tachometer-alt pr-3"></i>Dashboard </h3>
+<div class="row m-0 p-0">
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="info-box bg-info hover-expand-effect">
+            <div class="icon">
+                <a href="{% url 'hr_employees' %}"><i class="fas fa-users"></i></a>
+            </div>
+            <div class="content">
+                <div class="text-white"><a href="{% url 'hr_employees' %}" class="text-white"><b>Employees</b></a></div>
+                <div class="number"><a href="{% url 'hr_employees' %}" class="text-white">{{total_emp}}</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="info-box bg-primary hover-expand-effect">
+            <div class="icon">
+                <a href="{% url 'hr_emlpoyees_attendence_index' %}"><i class="fas fa-fingerprint"></i></a>
+            </div>
+            <div class="content">
+                <div class="text-white"><b>Punching</b></div>
+                <a href="" class="text-white">View</a>
+                <!-- <div class="number count-to" data-from="0" data-to="257" data-speed="1000" data-fresh-interval="20">257</div> -->
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="info-box bg-warning hover-expand-effect">
+            <div class="icon">
+                <a href="{% url 'hrAdmin_leaves_index' %}"><i class="fas fa-calendar-check"></i></a>
+            </div>
+            <div class="content">
+                <div class="text-white"><b>Leaves</b></div>
+                <a href="" class="text-white">View</a>
+                <!-- <div class="number count-to" data-from="0" data-to="243" data-speed="1000" data-fresh-interval="20">243</div> -->
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 pr-2">
+        <div class="info-box bg-success hover-expand-effect">
+            <div class="icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="content">
+                <div class="text-white"><b>Holidays</b></div>
+                <a href="" class="text-white">View</a>
+                <!-- <div class="number count-to" data-from="0" data-to="1225" data-speed="1000" data-fresh-interval="20">1225</div> -->
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+{% include 'components/forbidden.html' %}
+ 
+ {% endif %}
+ {% else %}
+ {% include 'components/401.html' %}
+ {% endif %}
+{% endblock %}

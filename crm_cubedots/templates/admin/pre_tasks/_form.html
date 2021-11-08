@@ -1,0 +1,36 @@
+<div class="row text-left">
+    <div class="col-md-12">
+       
+        <div class="form-group">
+                    
+                    {% load crispy_forms_tags %}
+                    {{ field.help_text }}
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-0">
+                          {{ form.department|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.parent_id|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.name|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.taskid|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-12 mb-0">
+                            {{ form.description|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.task_category|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.required_time|as_crispy_field }}
+                        </div>
+                    </div>  
+                    {{ field.errors }}
+        </div>
+    </div>
+
+    
+</div>

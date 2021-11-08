@@ -1,0 +1,18 @@
+pip install django-crispy-forms
+
+pip install django-mathfilters
+
+pip install djangorestframework
+
+pip install django-filter
+
+pip install django-import-export
+
+pip install mysqlclient
+
+python -m pip install Pillow
+
+pip install django-excel
+
+pip install humanfriendly
+

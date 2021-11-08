@@ -1,0 +1,177 @@
+{% extends 'layouts/hr_layout.html' %}
+{% block content %}
+{% load static %}
+
+{% include "components/validation_alert.html" %}
+{% if user.is_authenticated %}
+{% if user.is_staff == 1 and user.groups.all.0.name == 'administrator' or user.role == 'administrator' or user.role == 'hr' or user.role == 'hr_admin' %}
+
+<div class="container">
+    <h2 class="text-center text-secondary">Manage Employees</h2>
+
+    <div class="row m-0 p-0">
+
+        <div class="col-md-10 m-0 p-0 mx-auto">
+            <div id="custom-search-input">
+
+                <form method="get" action="{% url 'hr_employees_search' %}" class="form-inline">
+                    <div class="input-group col-md-12 my-2">
+                        <div class="col">
+                            <input type="text" name="search" class="form-control input-lg"
+                                placeholder="Search Employees" />
+                        </div>
+                        <div class="float-left mr-3">
+                            <span class="input-group-btn">
+                                <button class="btn btn-outline-info" type="submit"><i class="fas fa-search"></i>
+                                    Search</button>
+                            </span>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Show All Employee List as a Card -->
+    
+    <div class="card col-md-10 mx-auto"
+        style="box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2); box-sizing: inherit; border-radius: 0;">
+        <!-- <div class="card-header bg-info text-white rounded-0"><b>Employees</b> 
+            <span class="btn btn-sm btn-success border border-light float-right rounded-0" href=""><i class="fas fa-plus-circle"></i> Add New</span>         
+        </div> -->
+        <div class="card-content">
+            <div class="row m-0 p-0">
+
+                <!-- Table that shows Employee List -->
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="text-secondary">
+                            {% if page_obj %}
+                            <tr>
+                                <th>#</th>
+                                <th>EMP Id</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <!-- <th>Email</th> -->
+                                <th>Department</th>
+                                <th>Designation</th>
+                                <th>Join Date</th>
+                                <th>Profile</th>
+                                <th>Options</th>
+                            </tr>
+                            {% else %}
+                            {% endif %}
+                        </thead>
+                        <tbody class="table">
+                            <!-- Check if there are any employee to render in view -->
+                            {% for row in page_obj %}
+                            <tr>
+                                <td scope="row">{{ forloop.counter }}</td>
+                                <td scope="row" class="text-center">{{ row.id}}</td>
+                                <td>
+                                    {% if row.avatar %}
+                                    <img src="{{row.avatar.url}}" width="40" height="40" alt=""
+                                        class="rounded-circle border border-light" style="box-shadow: 1px 0px 4px 2px rgba(0,0,0,0.45);
+                                        -webkit-box-shadow: 1px 0px 4px 2px rgba(0,0,0,0.45);
+                                        -moz-box-shadow: 1px 0px 4px 2px rgba(0,0,0,0.45);" />
+                                    {% else %}
+                                    {% if row.gender == 'male' %}
+                                    <img src="{% static 'images/avatar/male_avatar.jpg' %}" width="40" height="40"
+                                        alt="" class="rounded-circle" />
+                                    {% endif %}
+                                    {% if row.gender == 'female' %}
+                                    <img src="{% static 'images/avatar/female_avatar.jpg' %}" width="40" height="40"
+                                        alt="" class="rounded-circle" />
+                                    {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td>{{row.first_name}} {{row.last_name}}</td>
+                                <!-- <td>{{row.email}}</td> -->
+                                <td>{{row.department.name}}</td>
+                                <td>{{row.role}}</td>
+                                {% if row.date_joined %}
+                                <td>{{ row.date_joined|date:"d M Y" }}</td>
+                                {% else %}
+                                <td>Not Available</td>
+                                {% endif %}
+                                <td>
+                                    {% if row.approval_status == 'pending' %}
+                                    <span class="badge badge-pill badge-warning">{{ row.approval_status }}</span>
+                                    {% endif %}
+                                    {% if row.approval_status == 'completed' %}
+                                    <span class="badge badge-pill badge-info">{{ row.approval_status }}</span>
+                                    {% endif %}
+                                    {% if row.approval_status == None %}
+                                    <span class="badge badge-pill badge-secondary">None</span>
+                                    {% endif %}
+                                </td>
+                                
+                                <td align="left">
+                                    <!-- <button type="button" class="btn btn-sm btn-default" title=""><i class="fa fa-circle"></i></button> -->
+                                    <a data-toggle="tooltip" data-placement="top" title="View Employee" href="{% url 'hr_employee_profile' row.id %}"
+                                        class="btn btn-small rounded-circle bg-info text-white" style="box-shadow: 1px 2px 4px 1px rgba(0,0,0,0.37);
+                                    -webkit-box-shadow: 1px 2px 4px 1px rgba(0,0,0,0.37);
+                                    -moz-box-shadow: 1px 2px 4px 1px rgba(0,0,0,0.37);"><i class="fas fa-bars"></i></a>
+
+                                    <!-- <a href=""  title="Edit"> <i class="fas fa-edit fa-lg text-dark"></i>&nbsp;</a>
+                                    
+                                    <form method="post" action="" style="display: inline;"><button class="float-right btn-sm-0 btn-danger" type="submit" title="Remove" onclick="return confirm('Are you sure want to delete?')"><i class="fas fa-md fa-trash"></i></button>
+                                        {% csrf_token %}
+                                    </form> -->
+                                    
+                                  
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <p class="m-3">Not Available</p>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- employees Table END -->
+            </div>
+            <div class="row m-0 p-0">
+                <div class="col text-right mr-3">
+                    {% include 'components/paginator.html' %}
+                </div>
+            </div>
+            
+            <!-- <div class="center">
+                <footer class="bg-info text-white p-5">
+                    <div class="footer-copyright">
+                        <div class="container">
+                            Cubedots
+                        </div>
+                    </div>
+                </footer>
+            </div> -->
+        </div>
+    </div>
+    <div class="float-right mt-1 mr-4" data-toggle="tooltip" data-placement="top" title="Add Employee">
+        <a href="{% url 'hr_employee_create' %}"><i class="fas fa-plus-circle fa-4x" style="box-shadow: 0px 0px 12px 2px rgba(0,0,0,1);
+            -webkit-box-shadow: 0px 0px 12px 2px rgba(0,0,0,1);
+            -moz-box-shadow: 0px 0px 12px 2px rgba(0,0,0,1);
+        
+        display: inline-flex; 
+        align-items: center; 
+        justify-content: center; 
+        text-decoration: none;
+        
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        
+        margin: 0 6px;color:#01741d;"></i></a>
+    </div>
+    <!-- Card END -->
+</div>
+{% else %}
+{% include 'components/forbidden.html' %}
+ 
+ {% endif %}
+ {% else %}
+ {% include 'components/401.html' %}
+ {% endif %}
+{% endblock %}

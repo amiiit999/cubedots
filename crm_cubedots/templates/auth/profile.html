@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+</head>
+<body>
+    {% for message in messages %}
+    {% if message.tags == "success" %}
+    <span {% if message.tags %} class="alert alert-success font-weight-bold" {% endif %}> {{ message }} </span>
+    {% endif %}
+    
+    {% if message.tags == "failed" %}
+    <span {% if message.tags %} class="alert alert-Danger font-weight-bold" {% endif %}> {{ message }} </span>
+    {% endif %}
+    {% endfor %}
+    <h1>User Profile</h1><br><br>
+    <a href="{{'/logout'}}">Logout</a>
+</body>
+</html>

@@ -1,0 +1,16 @@
+.container-profilepic {
+            width: 150px;
+            height: 150px;
+        }
+        .photo-preview {
+           
+            background-size: cover;
+            background-position: center;
+        }
+        .middle-profilepic {
+            background-color: rgba(68, 67, 67, 0.69);
+           
+        }
+        .container-profilepic:hover .middle-profilepic {
+            display: flex!important;
+            cursor: pointer;}

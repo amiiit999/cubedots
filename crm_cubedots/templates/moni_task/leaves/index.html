@@ -1,0 +1,107 @@
+{% extends 'layouts/user_layout.html' %}
+{% block content %}
+{% load static %}
+
+{% include "components/validation_alert.html" %}
+{% if user.is_authenticated %}
+    {% if user.role == 'tl' or user.role == 'qa' %}
+
+    <div class="container">
+    <h3 class="mt-3 p-0" style="color:rgb(87, 86, 86)"><i class="fas fa-tachometer-alt pr-3"></i>Leaves Dashboard </h3>
+        
+        <div class="row">
+            <div class="col-lg-3 col-sm-6">
+                <div class="card-box border bg-info">
+                    <div class="inner">
+                        <h3>{{total_leaves}}</h3>
+                        <p>Leaves</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <a href="{% url 'moni_tasks_apply_leaves_index' %}" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                <div class="card-box border bg-success">
+                    <div class="inner">
+                        <h3>{{approved_leaves}} </h3>
+                        <p>Approved Leaves </p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <a href="{% url 'moni_tasks_apply_leaves_index' %}" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                <div class="card-box border bg-warning">
+                    <div class="inner">
+                        <h3>{{pending_leaves}} </h3>
+                        <p>Pending Leaves </p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-user-clock"></i>
+                    </div>
+                    <a href="{% url 'moni_tasks_apply_leaves_index' %}" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                <div class="card-box border bg-danger">
+                    <div class="inner">
+                        <h3>{{rejected_leaves}} </h3>
+                        <p>Rejected Leaves </p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-user-times"></i>
+                    </div>
+                    <a href="{% url 'moni_tasks_apply_leaves_index' %}" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            
+        </div>
+     
+    <h3 class="mt-4 p-0" style="color:rgb(87, 86, 86)"><i class="fas fa-tachometer-alt pr-3"></i>Employees Leaves </h3>
+
+        <div class="row">
+            {% if user.role == 'qa' %}  
+            <div class="col-lg-3 col-sm-6">
+                <div class="card-box border bg-dark">
+                    <div class="inner">
+                        <h3>{{total_tl_leaves}} </h3>
+                        <p>Tl's Leaves </p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <a href="{% url 'approve_leaves_index' %}" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            {% endif %}
+            <div class="col-lg-3 col-sm-6">
+                <div class="card-box border bg-secondary">
+                    <div class="inner">
+                        <h3>{{total_emp_leaves}} </h3>
+                        <p>Employees Leaves </p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <a href="{% url 'approve_leaves_index' %}" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+        </div>
+      
+    
+    </div>
+    {% else %}
+    {% include 'components/forbidden.html' %}
+     
+     {% endif %}
+     {% else %}
+     {% include 'components/401.html' %}
+     {% endif %}
+    {% endblock %}    

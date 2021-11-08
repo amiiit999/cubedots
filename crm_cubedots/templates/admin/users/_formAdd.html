@@ -1,0 +1,55 @@
+<div class="row text-left">
+    <div class="col-md-12">
+       
+        <div class="form-group">
+                    
+                    {% load crispy_forms_tags %}
+                    {{ field.help_text }}
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-0">
+                          {{ form.first_name|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.last_name|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.email|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.role|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.department|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.status|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.gender|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.date_joined|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.password1|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.password2|as_crispy_field }}
+                        </div>
+                       
+                            <i><small class="text-secondary"><br>NOTE :  This Profile will be forwarded to HR Team to get Completed.</small></i>
+                        
+                        
+                        
+                    </div>  
+                    {{ field.errors }}
+        </div>
+    </div>
+
+    <div class="col-md-12 text-center">
+        <button type="submit" class="btn btn-sm0 btn-secondary" name="Search">Submit</button>
+
+        <a class="btn btn-sm0 btn-danger" href="{% url 'admin_user_index' %}" title="">Cancel </a>
+
+    </div>
+</div>

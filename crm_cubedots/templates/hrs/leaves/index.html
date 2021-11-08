@@ -1,0 +1,198 @@
+{% extends 'layouts/hr_layout.html' %}
+{% block content %}
+{% load static %}
+
+{% include "components/validation_alert.html" %}
+{% if user.is_authenticated %}
+    {% if user.role == 'tl' or user.role == 'qa' or user.role == 'hr_admin' or user.role == 'hr' or user.role == 'administrator' %}
+    
+    <div class="container">
+    <!-------HR's LEAVES DASHBOARD---------->
+    
+    <h5 class="mt-3 p-0" style="color:rgb(87, 86, 86);"><i class="fas fa-user-friends pr-3"></i>HR Leaves Dashboard </h5>
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-info hover-expand-effect">
+                <div class="icon" style="opacity: 0.8;">
+                    <a href="{% url 'user_tasks' %}"><i class="fas fa-user"></i></a>
+                </div>
+                <div class="content">
+                    <div class="text-white"><a href="{% url 'user_tasks' %}" class="text-white"> Leaves</a></div>
+                   <a href="#" class="text-white"><b>{{total_emp_leaves}}</b></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-success hover-expand-effect">
+                <div class="icon" style="opacity: 0.8;">
+                    <a href="{% url 'user_tasks' %}"><i class="fas fa-user-check"></i></a>
+                </div>
+                <div class="content">
+                    <div class="text-white"><a href="{% url 'user_tasks' %}" class="text-white">Approved Leaves</a></div>
+                   <a href="#" class="text-white"><b>{{total_emp_leaves_approved}}</b></a>
+                </div>
+            </div>
+        </div> 
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-warning hover-expand-effect">
+                <div class="icon" style="opacity: 0.8;">
+                    <a href="{% url 'user_tasks' %}"><i class="fas fa-user-clock"></i></a>
+                </div>
+                <div class="content">
+                    <div class="text-white"><a href="{% url 'user_tasks' %}" class="text-white">Pending Leaves</a></div>
+                   <a href="#" class="text-white"><b>{{total_emp_leaves_pending}}</b></a>
+                </div>
+            </div>
+        </div> 
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-danger hover-expand-effect">
+                <div class="icon" style="opacity: 0.8;">
+                    <a href="{% url 'user_tasks' %}"><i class="fas fa-user-times"></i></a>
+                </div>
+                <div class="content">
+                    <div class="text-white"><a href="{% url 'user_tasks' %}" class="text-white">Rejected Leaves</a></div>
+                   <a href="#" class="text-white"><b>{{total_emp_leaves_rejected}}</b></a>
+                </div>
+            </div>
+        </div> 
+            
+        </div>
+    
+        <!-------USERS LEAVES DASHBOARD---------->
+    <h5 class="mt-3 p-0" style="color:rgb(87, 86, 86);"><i class="fas fa-users pr-3"></i>Employees Leaves Dashboard </h5>
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-info hover-expand-effect">
+                <div class="icon" style="opacity: 0.8;">
+                    <a href="{% url 'hrAdmin_users_leaves_approval_index' %}"><i class="fas fa-user"></i></a>
+                </div>
+                <div class="content">
+                    <div class="text-white"><a href="" class="text-white"> Leaves</a></div>
+                   <a href="#" class="text-white"><b>{{total_emp_leaves}}</b></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-success hover-expand-effect">
+                <div class="icon" style="opacity: 0.8;">
+                    <a href="{% url 'hrAdmin_users_leaves_approval_index' %}"><i class="fas fa-user-check"></i></a>
+                </div>
+                <div class="content">
+                    <div class="text-white"><a href="#" class="text-white">Approved Leaves</a></div>
+                   <a href="#" class="text-white"><b>{{total_emp_leaves_approved}}</b></a>
+                </div>
+            </div>
+        </div> 
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-warning hover-expand-effect">
+                <div class="icon" style="opacity: 0.8;">
+                    <a href="{% url 'hrAdmin_users_leaves_approval_index' %}"><i class="fas fa-user-clock"></i></a>
+                </div>
+                <div class="content">
+                    <div class="text-white"><a href="#" class="text-white">Pending Leaves</a></div>
+                   <a href="#" class="text-white"><b>{{total_emp_leaves_pending}}</b></a>
+                </div>
+            </div>
+        </div> 
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-danger hover-expand-effect">
+                <div class="icon" style="opacity: 0.8;">
+                    <a href="{% url 'hrAdmin_users_leaves_approval_index' %}"><i class="fas fa-user-times"></i></a>
+                </div>
+                <div class="content">
+                    <div class="text-white"><a href="#" class="text-white">Rejected Leaves</a></div>
+                   <a href="#" class="text-white"><b>{{total_emp_leaves_rejected}}</b></a>
+                </div>
+            </div>
+        </div> 
+        
+    </div>
+
+    <!-------TL's LEAVES DASHBOARD---------->
+    <h5 class="mt-3 p-0" style="color:rgb(87, 86, 86);"><i class="fas fa-users pr-3"></i>TL's Leave Dashboard </h5>
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-info hover-expand-effect">
+                <div class="icon" style="opacity: 0.8;">
+                    <a href="{% url 'hrAdmin_tl_leaves_approval_index' %}"><i class="fas fa-user"></i></a>
+                </div>
+                <div class="content">
+                    <div class="text-white"><a href="#" class="text-white"> Leaves</a></div>
+                   <a href="#" class="text-white"><b>{{total_tl_leaves}}</b></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-success hover-expand-effect">
+                <div class="icon" style="opacity: 0.8;">
+                    <a href="{% url 'hrAdmin_tl_leaves_approval_index' %}"><i class="fas fa-user-check"></i></a>
+                </div>
+                <div class="content">
+                    <div class="text-white"><a href="#" class="text-white">Approved Leaves</a></div>
+                   <a href="#" class="text-white"><b>{{total_tl_leaves_approved}}</b></a>
+                </div>
+            </div>
+        </div> 
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-warning hover-expand-effect">
+                <div class="icon" style="opacity: 0.8;">
+                    <a href="{% url 'hrAdmin_tl_leaves_approval_index' %}"><i class="fas fa-user-clock"></i></a>
+                </div>
+                <div class="content">
+                    <div class="text-white"><a href="#" class="text-white">Pending Leaves</a></div>
+                   <a href="#" class="text-white"><b>{{total_tl_leaves_pending}}</b></a>
+                </div>
+            </div>
+        </div> 
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-danger hover-expand-effect">
+                <div class="icon" style="opacity: 0.8;">
+                    <a href="{% url 'hrAdmin_tl_leaves_approval_index' %}"><i class="fas fa-user-times"></i></a>
+                </div>
+                <div class="content">
+                    <div class="text-white"><a href="#" class="text-white">Rejected Leaves</a></div>
+                   <a href="#" class="text-white"><b>{{total_tl_leaves_rejected}}</b></a>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    
+    <!-------MANAGERS LEAVES DASHBOARD---------->
+
+    <h5  class="mt-4 p-0" style="color:rgb(87, 86, 86);"><i class="fas fa-user-tie pr-3"></i>Managers Leaves </h5>
+
+        <div class="row">
+
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box bg-secondary hover-expand-effect">
+                    <div class="icon" style="opacity: 0.8;">
+                        <a href="{% url 'hrAdmin_leaves_approval_index' %}"><i class="fas fa-user"></i></a>
+                    </div>
+                    <div class="content">
+                        <div class="text-white"><a href="{% url 'hrAdmin_leaves_approval_index' %}" class="text-white" style="font-size: 12px;">Managers Leaves</a></div>
+                       <a href="#" class="text-white"><b>{{total_manager_leaves}}</b></a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {% else %}
+    {% include 'components/forbidden.html' %}
+     
+     {% endif %}
+     {% else %}
+     {% include 'components/401.html' %}
+     {% endif %}
+    {% endblock %}    

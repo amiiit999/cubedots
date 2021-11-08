@@ -1,0 +1,372 @@
+{% extends 'layouts/user_layout.html' %}
+{% block content %}
+{% load static %}
+
+{% if user.is_authenticated %}
+    {% if user.role == "user" or user.role == "hr" or user.role == "tl" or user.role == "qa" or user.role == 'admin' %}
+<div class="container-fluid mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-12 ">
+            {% include "components/validation_alert.html" %}
+            <div class="card">
+                <div class="card-header bg-info text-white" style="border-radius: 0;">
+                   <b>'View Tasks' for "{{project.name}}"</b>
+
+                    <a class="btn btn-sm btn-danger float-right" href="{% url 'user_tasks' %}"> Back</a>
+                </div>
+                
+               
+                <div class="card-body">
+
+                    <div class="row">                     
+                            <div class="main-section col-2">
+                                <div class="dashbord">
+                                    <div class="icon-section">                      
+                                        <i class="fa fa-list-ul" aria-hidden="true"></i><br>
+                                        <strong>Total Task</strong>
+                                        <p>{{totalTasksStatics}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                  
+                            <div class="main-section col-2">
+                                <div class="dashbord dashbord-skyblue">
+                                    <div class="icon-section">                      
+                                        <i class="fa fa-user-check" aria-hidden="true"></i><br>
+                                        <strong>Assigned</strong>
+                                        <p>{{tasksStaticsAssigned.assigned}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                        <div class="main-section col-2">
+                            <div class="dashbord dashbord-blue">
+                                <div class="icon-section">                      
+                                    <i class="fa fa-play-circle" aria-hidden="true"></i><br>
+                                    <strong>Started</strong>
+                                    {% if user.role == "tl"%}
+                                    <p>{{tasksStatics.started}}</p>
+                                    {% endif %}
+
+                                    {% if user.role == "user"%}
+                                        <p>{{tasksStatics.started}}</p>
+                                    {% endif %}                  
+
+                                    {% if user.role == "hr"%}
+                                        <p>{{tasksStatics.started}}</p>
+                                    {% endif %}
+
+                                    {% if user.role == "qa"%}
+                                    <p>{{tasksStatics.started}}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                       
+                        <div class="main-section col-2">
+                            <div class="dashbord dashbord-red">
+                                <div class="icon-section">                      
+                                    <i class="fa fa-window-close" aria-hidden="true"></i><br>
+                                    <strong>Rejected by TL</strong>
+                                    <p>{{tasksStaticsTlRejected.tl_rejected}}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="main-section col-2">
+                            <div class="dashbord dashbord-red">
+                                <div class="icon-section">                      
+                                    <i class="fa fa-window-close" aria-hidden="true"></i><br>
+                                    <strong>Rejected by QA</strong>
+                                    <p>{{tasksStaticsQaRejected.qa_rejected}}</p>
+                                </div>
+                            </div>
+                        </div>
+   
+                        <div class="main-section col-2">
+                            <div class="dashbord dashbord-green">
+                                <div class="icon-section">                      
+                                    <i class="fa fa-tasks" aria-hidden="true"></i><br>
+                                    <strong>Completed</strong>
+                                    <p>{{tasksStaticsCompleted.completed}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+
+                    
+
+                    <div class="row" >
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                    <form method="get" action="{% url 'user_tasks_showProjects_search' project.id %}">
+                                    <input class="form-control" type="text" name="search" id="id_q" placeholder="Type text here" required/>  
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+
+                                <button type="submit" class="btn btn-sm0 btn-secondary"><i class="fas fa-search"></i> Search</button>
+                                <a class="btn btn-sm0 btn-danger" href="{% url 'user_tasks_showProjects' project.id  %}" title=""><i class="fa fa-times"></i> </a>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+
+
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered table-hover">
+                            <thead class="table-info">
+                                <tr>
+                                    <th width="5%">#</th>
+                                 
+                                    <th width="10%"><a class="text-decoration-none text-dark" href="">TaskID</a></th>
+                                    <th width="10%"><a class="text-decoration-none text-dark" href="">Task Name</a></th>
+
+                                    <th width="10%"><a class="text-decoration-none text-dark" href="">Department</a></th>
+                                    <th width="12%">Task Started At</th>
+                                    <th width="10%">Task Ended At</th>
+                                    <th width="05%">Duration</th>
+                                    <th width="5%"><a class="text-decoration-none text-dark" href="">Status</a></th>
+                                                                    
+                                    <th width="10%" title="Process status"><a class="text-decoration-none text-dark" href="">P.Status</a></th>
+                                    <!-- <th width="05%">Started At</th> -->
+                                    
+                                    <th width="10%"><a class="text-decoration-none text-dark" href="">Task Priority</a></th>  
+
+                                    <th width="13%" align="right">Action</th>
+                                   
+                                   
+                                </tr>
+                            </thead>
+                            <tbody>
+                               {% for row in page_obj %}
+                               
+                                <tr>
+                                    <td scope="row">{{ forloop.counter }}</td>
+                                  
+                                    <td>
+                                        {{ row.taskid }}
+                                    </td>
+                                    <td>
+                                        {{ row.name }}
+                                    </td>
+
+                                    <td>
+                                        {% if row.department %}
+                                        {{row.department.name}}
+                                        {% else %}
+                                        ''
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {% if row.task_started_at %}
+                                        
+                                    <div class="medium">{{ row.task_started_at|date:"d M Y" }}</div>
+                                          
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                    </td>
+                                    <td>
+                                    {% if row.task_ended_at %}
+                                    
+                                    <div class="medium">{{ row.task_ended_at|date:"d M Y" }}</div>
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                    </td>
+                                   
+                                    <td>
+                                    {{ row.task_duration }} | {{ row.work_duration }}
+                                    </td>
+                                    <td>
+                                        {% if row.status == 'active' %}
+                                       
+                                        <span class="badge badge-pill badge-success">{{ row.status }}</span>
+                                        {% else %}
+                                        <span class="badge badge-pill badge-danger">{{ row.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ row.process_status}}
+                                    </td>
+                                    <!-- <td>{{row.work_started_at}}</td> -->
+                                    <td class="text-center">
+                                        {% if row.priority == 'extreme high' %}
+                                        <span class="badge badge-pill badge text-white extreme_high_task" style="background-color: #8C370D;">{{ row.priority }}</span> 
+                                        {% endif %}
+
+                                        {% if row.priority == 'high' %}
+                                        <span class="badge badge-pill badge-danger">{{ row.priority }}</span> 
+                                        {% endif %}
+
+                                        {% if row.priority == 'medium' %}
+                                        <span class="badge badge-pill badge-warning">{{ row.priority }}</span>
+                                        {% endif %}
+
+                                        {% if row.priority == 'low' %}
+                                        <span class="badge badge-pill badge-primary">{{ row.priority }}</span>
+                                        {% endif %}
+
+                                        {% if row.priority == null %}
+                                        <span class="badge badge-pill badge-secondary">Not Available</span>
+                                        {% endif %}
+                                    </td>
+                                    <td align="right">
+        
+                                        {% if row.children %}
+                                        
+                                        <button class="btn btn-sm btn-info" type="button" data-toggle="collapse" data-target="#collapseExample{{ row.id }}" aria-expanded="false" aria-controls="collapseExample{{ row.id }}">                                        
+                                        <i class="fas fa-chevron-circle-down"></i>
+                                        </button>
+                                                         
+                                       
+                                        {% else %}
+                                       <a href="{% url 'user_tasks_show' row.id %}" class="btn btn-sm btn-secondary" title="View"> <i class="fas fa-eye fa-sm"></i></a>
+                                       {% endif %}
+                                       
+                                    </td>
+                                    
+                                </tr>
+                               
+                              
+                                <tr class="table-info">
+                                    <td colspan="12" class="p-0">
+                                        <div class="collapse" id="collapseExample{{ row.id }}">
+                                            <table class="table table-sm table-borderless">
+                                                <thead>
+                                                    <tr>
+                                                        <tr>
+                                                            <th width="5%">#</th>                                                        
+                                                            <th width="15%">TaskID</th>
+                                                            <th width="15%">Task Name</th>
+                                                            <th width="10%">W. Started At</th>
+                                                            <th width="10%">W. Ended At</th>
+                                                            <th width="10%">Duration</th>
+                                                            
+                                                            <th width="10%" title="Process status">P. Status</th>
+                                                            <th width="10%">Start At</th>
+                                                            <th width="10%">Task Priority</th>
+                                                            
+                                                            <th width="5%" align="right">Action</th>
+                                                        </tr>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    
+                                                    {% for subtask in row.children %}
+                                                 
+                                                    {% if subtask.parent_id == row.id %}
+                                                  
+                                                    <tr>
+                                                    <td scope="row">{{ forloop.counter }}</td>                                                    
+                                                    <td>
+                                                        {{subtask.taskid}}
+                                                    </td>
+
+                                                    <td>
+                                                        {{subtask.name}}
+                                                    </td>
+
+                                                    <td>
+                                                        {% if subtask.work_started_at %}
+                                                        {{subtask.work_started_at}}
+                                                        {% else %}
+                                                         -
+                                                        {% endif %}
+                                                          
+                                                    </td>
+                                                    <td>
+                                                        {% if subtask.work_ended_at %}
+                                                        {{subtask.work_ended_at}}
+                                                        {% else %}
+                                                         -
+                                                        {% endif %}  
+                                                    </td>
+                                                    <td>
+                                                        {{ subtask.task_duration }} | {{ subtask.work_duration }}
+                                                    </td>
+                                                       
+                                                    <td>
+                                                        {{ subtask.process_status }}
+                                                    </td>
+                                                    <td class="date">
+                                                        <div class="medium">
+                                                        {% if subtask.task_started_at %} 
+                                                        {{subtask.task_started_at|date:"d M Y"}}   
+                                                           
+                                                        {% else %}
+                                                         -
+                                                        {% endif %} 
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {% if subtask.priority == 'extreme high' %}
+                                                        <span class="badge badge-pill badge text-white extreme_high_task" style="background-color: #8C370D;">{{ subtask.priority }}</span> 
+                                                        {% endif %}
+                
+                                                        {% if subtask.priority == 'high' %}
+                                                        <span class="badge badge-pill badge-danger">{{ subtask.priority }}</span> 
+                                                        {% endif %}
+                
+                                                        {% if subtask.priority == 'medium' %}
+                                                        <span class="badge badge-pill badge-warning">{{ subtask.priority }}</span>
+                                                        {% endif %}
+                
+                                                        {% if subtask.priority == 'low' %}
+                                                        <span class="badge badge-pill badge-primary">{{ subtask.priority }}</span>
+                                                        {% endif %}
+                
+                                                        {% if subtask.priority == null %}
+                                                        <span class="badge badge-pill badge-secondary">Not Available</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td align="right">
+                                                        <a href="{% url 'user_tasks_show' subtask.id %}" class="btn btn-sm btn-secondary" title="View"> <i class="fas fa-eye"></i></a>
+                                                    </td>
+                                                </tr>
+                                                {% endif %}
+                                                {% endfor %}
+                                            </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                    </tr>
+                                
+
+                               
+                                
+                                {% empty %}
+                                <tr>
+                                    <td colspan="12" style="text-align: center">No record to show</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            {% include 'components/paginator.html' %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+{% include 'components/forbidden.html' %}
+     
+     {% endif %}
+     {% else %}
+     {% include 'components/401.html' %}
+     {% endif %}
+{% endblock %}

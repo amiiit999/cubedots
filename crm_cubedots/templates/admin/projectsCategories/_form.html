@@ -1,0 +1,19 @@
+{% block content %}
+{% load static %}
+{% if user.is_authenticated %}
+{% if user.is_staff == 1 and user.groups.all.0.name == "admin" or user.role == 'admin' or user.role == 'administrator' %}
+<div class="row text-left">
+    <div class="col-md-12">
+        {% load crispy_forms_tags %}
+        
+            {{ form|crispy }}
+           
+    </div>
+    
+</div>
+{% else %}
+{% include 'components/forbidden.html' %}
+
+{% endif %}
+{% endif %}
+{% endblock %}

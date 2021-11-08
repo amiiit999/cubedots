@@ -1,0 +1,135 @@
+{% extends 'layouts/index.html' %}
+{% block content %}
+{% load static %}
+
+{% if user.is_authenticated %}
+    {% if user.is_staff == 1 and user.groups.all.0.name == "admin" or user.role == 'admin' or user.role == 'administrator' %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                
+                <div class="card-header bg-info text-white"><b>Task Informations : Task ID "{{task.taskid}}"</b>
+
+                    <a class="btn btn-sm btn-danger float-right" href="{% url 'admin_task_index' task.project_id %}"> Back</a>
+                </div> 
+               
+                <div class="card-body text-left">
+                   
+                    <div class="col-md-12 table-responsive-sm">
+                        <table id="classTable" class="table table-bordered text-dark text-capitalize">
+                <tbody>
+
+                    <tr>
+                        <td ><strong> ID :</strong></td>
+                        <td ><span>{{task.id}}</span></td>
+                      </tr>
+                  <tr>
+                    <td ><strong>Task ID :</strong></td>
+                    <td ><span>{{task.taskid}}</span></td>
+                  </tr>
+                  
+                  <tr>
+                    <td><strong>Task Name :</strong></td>
+                    <td>{{task.name}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>User Name :</strong></td>     
+                        <td>{{task.user}}</td>      
+                  </tr>
+                  <tr>
+                    <td><strong>TL Name :</strong></td>     
+                        <td>{{task.tl}}</td>      
+                  </tr>
+                  <tr>
+                    <td><strong>QC Name :</strong></td>     
+                        <td>{{task.qc}}</td>      
+                  </tr>
+                  <tr>
+                    <td><strong>Department Name :</strong></td>     
+                        <td>{{task.department.name}}</td>      
+                  </tr>
+                  <tr>
+                    <td><strong>Project Name :</strong></td>
+                    <td>{{task.project.name}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Task Category Name :</strong></td>
+                    <td>{{task.task_category.name}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Team Description :</strong></td>
+                    <td>{{task.description}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Is Extra ? :</strong></td>
+                    <td>{{task.is_extra}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Is Dependancy :</strong></td>
+                    {% if task.dependancy_id %}
+                    <td>{{task.dependancy_id}}</td>
+                    {% else %}
+                    <td>Not Available</td>
+                    {% endif %}
+                  </tr>
+                    <td><strong>Process Status :</strong></td>
+                    <td>{{task.process_status}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Progress :</strong></td>
+                    <td>{{task.progress}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Task Started At :</strong></td>
+                    <td>{{task.task_started_at}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Task Ended At :</strong></td>
+                    <td>{{task.task_ended_at}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Task Durations :</strong></td>
+                    <td>{{task.task_duration}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Work Started At :</strong></td>
+                    <td>{{task.work_started_at}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Work Ended At :</strong></td>
+                    <td>{{task.work_started_at}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Work Durations :</strong></td>
+                    <td>{{task.work_duration}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Task Created At :</strong></td>
+                    <td>{{task.created_at|date:"d M Y"}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Task Updated At :</strong></td>
+                    <td>{{task.updated_at|date:"d M Y"}}</td>
+                  </tr>
+                  
+                </tbody>
+              </table>
+                    
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+    <br><br>
+</div>
+{% else %}
+{% include 'components/forbidden.html' %}
+ 
+ {% endif %}
+ {% else %}
+ {% include 'components/401.html' %}
+ {% endif %}
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'layouts/index.html' %}
+{% block content %}
+{% load static %}
+{% if user.is_authenticated %}
+    {% if user.is_staff == 1 and user.groups.all.0.name == "admin" or user.role == 'admin' or user.role == 'administrator' %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                   <b>View Task category #{{row.id}}</b>
+
+                    <a class="btn btn-sm btn-danger float-right" href="{% url 'taskCategory_index' %}"> Back</a>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row text-left">
+                        {% include "components/validation_alert.html" %}
+                    </div>
+
+                    <div class="col-md-12">
+                            <div class="table-responsive">
+                            <table class="table table-bordered table-sm">
+                                <tr>
+                                    <th width="30%">Name : </th>
+                                    <td>{{row.name}}</td>
+                                </tr>
+
+                                <tr>
+                                    <th width="30%">Department Name : </th>
+                                    <td>{{row.department.name}}</td>
+                                </tr>
+
+                                <tr>
+                                    <th width="30%">Is Parent ? : </th>
+                                    <td> {% if row.parent_id  %}
+                                        YES
+                                        {% else  %}
+                                        NO
+                                        {% endif  %}
+                                        |  {% if row.parent_id != 0  %}
+                                        {{ row.department.name}}
+                                        {% endif  %}</td>
+                                </tr>
+                              
+                                <tr>
+                                    <th>Created at : </th>
+                                    <td>{{row.created_at}}</td>
+                                </tr>
+
+                                <tr>
+                                    <th>Updated at : </th>
+                                    <td>{{row.updated_at}}</td>
+                                </tr>
+                                
+                            </table>
+                            </div>
+                        </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+{% include 'components/forbidden.html' %}
+    
+    {% endif %}
+    {% else %}
+    {% include 'components/401.html' %}
+    {% endif %}
+{% endblock %}

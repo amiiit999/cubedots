@@ -1,0 +1,72 @@
+<div class="row text-left">
+    <div class="col-md-12">
+       
+        <div class="form-group">
+                    
+                    {% load crispy_forms_tags %}
+                    {{ field.help_text }}
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-0">
+                          {{ form.user|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.department|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.tl|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.qc|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.parent_id|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.task_category|as_crispy_field }}
+                        </div>
+                       
+                        
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.taskid|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.name|as_crispy_field }}
+                        </div>
+                        
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.description|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.task_duration|as_crispy_field }}  
+                            
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.status|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.process_status|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.dependency_id|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.is_extra|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.task_started_at|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.task_ended_at|as_crispy_field }}
+                        </div>
+                        <div class="form-group col mb-0">
+                            {{ form.priority|as_crispy_field }}
+                        </div>
+                        
+                        
+                    </div>  
+                    {{ field.errors }}
+        </div>
+    </div>
+
+    
+</div>

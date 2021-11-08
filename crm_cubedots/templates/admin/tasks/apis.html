@@ -1,0 +1,30 @@
+
+
+<html>
+    <h1>Homepage</h1>
+    {% for row in data.parent %}
+        <div class="section">
+            <h4><a href="#" class="section_toggle"></a></h4>
+            <table class="table table-condensed">
+                {{row.id}}
+                {{row.name}}
+                parent id - {{row.parent_id}}
+            </table>
+        </div>
+    
+    {% endfor %}
+    <h1>2nd </h1>
+    
+        <div class="section">
+            <h4><a href="#" class="section_toggle"></a></h4>
+            <table class="table table-condensed">
+                {{data5.project_id}} <br>
+                {{data5.name}} <br>
+                parent id - {{data5.parent_id}}
+            </table>
+        </div>
+    
+    
+    
+    
+    </html>

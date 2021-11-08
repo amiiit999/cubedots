@@ -1,0 +1,246 @@
+{% extends 'layouts/index.html' %}
+{% load render_bundle from webpack_loader %}
+{% block content %}
+{% load static %}
+{% load mathfilters %}
+{% include "components/validation_alert.html" %}
+
+{% if user.is_authenticated %}
+    {% if user.is_staff == 1 and user.groups.all.0.name == "admin" or user.role == 'admin' or user.role == 'administrator' %}
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                
+                <div class="card">
+                    <div class="card-header bg-info text-white"><b>Dashboard</b></div>
+                    <div class="card-body">                      
+                    <strong>Welcome !! 
+                        {% if user.is_authenticated %}
+                            {{ user.first_name }}
+                            {% else %}
+                            User
+                            {% endif %}
+                    </strong><br>
+                    
+                     
+                    </div>
+                    <div style="background-color:  #089db8
+                    ; font-stretch:extra-expanded;"><strong><p class="ml-3 text-white text-uppercase">Projects</p></strong></div> 
+                        <div class="row mt-1">
+                            <div class="col">
+                                <div class="card-block bg-primary">
+                                    <div class="card-body ">
+                                        <div class="row">                          
+                                            <div class="col">
+                                                <div class="numbers">
+                                                    <p class="text-white">Total Projects</p>
+                                                    <h3 class="text-center" ><b><a href="{% url 'project_index' %}" class="text-white">{{projects_count}}</a></b></h3>                                 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card-block bg-success">
+                                    <div class="card-body ">
+                                        <div class="row">                          
+                                            <div class="col">
+                                                <div class="numbers">
+                                                    <p class="text-white">Active Projects</p>
+                                                    <h3 class="text-center text-white" type="button" data-status_type="active" data-toggle="modal" data-target="#exampleModal" onclick=changeTitle(1)><b>{{active_projects_count}}</b></h3>                                 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if completed_projects_count %}
+                            <div class="col">
+                                <div class="card-block bg-secondary">
+                                    <div class="card-body">
+                                        <div class="row">                          
+                                            <div class="col">
+                                                <div class="numbers">
+                                                    <p class="text-white">Completed Projects</p>
+                                                    <h3 class="text-center text-white" type="button" data-status_type="completed" data-toggle="modal" data-target="#exampleModal" onclick=changeTitle(2)><b>{{completed_projects_count}}</b></h3>                                 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="col">
+                                <div class="card-block bg-danger">
+                                    <div class="card-body">
+                                        <div class="row">                          
+                                            <div class="col">
+                                                <div class="numbers">
+                                                    <p class="card-category text-white">On-Hold Projects</p>
+                                                    <h3 class="text-center text-white" type="button" data-status_type="on-hold" data-toggle="modal" data-target="#exampleModal" onclick=changeTitle(3)><b>{{onHold_projects_count}}</b></h3>                                 
+                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if upcoming_projects_count %}
+                            <div class="col">
+                                <div class="card-block bg-warning">
+                                    <div class="card-body">
+                                        <div class="row">                          
+                                            <div class="col">
+                                                <div class="numbers">
+                                                    <p class="card-category text-white">Upcoming Projects</p>
+                                                    <h3 class="text-center text-white" type="button" data-status_type="upcoming" data-toggle="modal" data-target="#exampleModal" onclick=changeTitle(4)><b>{{upcoming_projects_count}}</b></h3>                                 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% if projects_count %}
+                        <div class="col p-0 mt-1">
+  
+                             <div class="progress" style="height:20px;">
+                                <div class="progress-bar bg-success " role="progressbar" style="width:{{active_projects_count|div:projects_count |mul:100 |floatformat:2}}%"> <span class=" font-weight-bold"> {{active_projects_count|div:projects_count |mul:100 |floatformat:2}}% Active</span> </div>
+
+                                <div class="progress-bar bg-secondary " role="progressbar" style="width:{{completed_projects_count|div:projects_count |mul:100 |floatformat:2}}%"><span class=" font-weight-bold">{{completed_projects_count|div:projects_count |mul:100 |floatformat:2}}% Completed  </span> </div>
+
+                                <div class="progress-bar bg-danger " role="progressbar" style="width:{{onHold_projects_count|div:projects_count |mul:100 |floatformat:2}}%"><span class=" font-weight-bold">{{onHold_projects_count|div:projects_count |mul:100 |floatformat:2}}% On-Hold </span> </div>
+
+                                <div class="progress-bar bg-warning " role="progressbar" style="width:{{upcoming_projects_count|div:projects_count |mul:100 |floatformat:2}}%"><span class=" font-weight-bold text-dark">{{upcoming_projects_count|div:projects_count |mul:100 |floatformat:2}}% upcoming </span> </div>
+
+
+                            </div> 
+                        </div>
+                        {% endif %}
+
+                        
+                        <!-----Modal ----------------------------->
+
+                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-md" role="document">
+                                <div class="modal-content">
+
+                                    <div id="headerColor" class="modal-header text-dark">
+                                        <h5 class="modal-title" id="changeTitle" style="font-weight: bold;"> </h5>
+
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="modal-body">
+
+                                    
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!----------End Modal ----------------------->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    {% include 'components/forbidden.html' %}
+     
+     {% endif %}
+     {% else %}
+     {% include 'components/401.html' %}
+     {% endif %}
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+        
+        function changeTitle(val) {
+
+            if (val == 1) {
+                document.getElementById("changeTitle").innerHTML = "Active Projects";
+                document.getElementById("headerColor").style.backgroundColor = '#5cb85c ';
+            }
+            if (val == 2) {
+                document.getElementById("changeTitle").innerHTML = "Completed Projects";
+                document.getElementById("headerColor").style.backgroundColor = '#6c757d';
+            }
+            if (val == 3) {
+                document.getElementById("changeTitle").innerHTML = "On-Hold Projects";
+                document.getElementById("headerColor").style.backgroundColor = '#dc3545 ';
+
+            }
+            if (val == 4) {
+                document.getElementById("changeTitle").innerHTML = "Upcomming Projects";
+                document.getElementById("headerColor").style.backgroundColor = 'yellow ';
+
+
+            }
+        }
+        
+        window.onload = function(){                   
+        $(document).ready(function() {
+
+            $('#exampleModal').on('shown.bs.modal', function(event) {
+                //console.log("event", event);
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var status_type = button.data('status_type');
+
+                // AJAX request
+                $.ajax({
+                    url: 'projects/counts/' + status_type,
+                    type: 'get',
+                   
+                    cache:false,
+                    dataType: 'json',
+                    success: function(response) {
+
+                        var dataRow =JSON.parse(response.response_data);
+                        //console.log('data_test',dataRow)          
+                        var row = [];
+                        var projects = '<div class="table-responsive"><table class="table table-bordered">';
+                        var count = 1;
+                        
+                        $.each(dataRow, function(key, row) {
+                           
+                            projects += "<tbody>";
+                            projects += "<tr>";
+                            projects += "<td>" + count++ + "</td>";
+                            projects += "<td><span>" + row.fields.name + "</span></td>";
+                            projects += "</tr>";
+                            projects += "</tbody>";
+                            
+                        });
+                    
+                        projects += "</table></div>";
+                        $('.modal-body').html(projects);
+                    },
+
+                    error: function(xhr,errmsg,err) {
+                        console.log("error",err);
+
+                    }
+                });
+            });
+        });
+    }        
+        // function hideShow() {
+        //     console.log("click");
+        //     var x = document.getElementById("myText");
+        //     if (x.style.display === "none") {
+        //         x.style.display = "inline-block";
+        //     } else {
+        //         x.style.display = "none";
+        //     }
+        // }
+
+
+    </script>
+   
+
+    {% endblock %}

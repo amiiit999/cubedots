@@ -1,0 +1,74 @@
+{% extends 'layouts/user_layout.html' %}
+{% block content %}
+{% load static %}
+
+{% include "components/validation_alert.html" %}
+{% if user.is_authenticated %}
+    {% if user.role == 'user'%}
+    <h3 class="ml-3 p-0 pt-3" style="color:rgb(87, 86, 86)"><i class="fas fa-tachometer-alt pr-3"></i>Leaves Dashboard </h3>
+
+    <div class="container">
+        
+        <div class="row">
+            <div class="col-lg-3 col-sm-6">
+                <div class="card-box border bg-info">
+                    <div class="inner">
+                        <h3>{{total_leaves}}</h3>
+                        <p>Total Leaves</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <a href="{% url 'emp_leaves_index' %}" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                <div class="card-box border bg-success">
+                    <div class="inner">
+                        <h3>{{total_apprd_leaves}} </h3>
+                        <p>Approved Leaves </p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <a href="{% url 'emp_leaves_index' %}" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                <div class="card-box border bg-warning">
+                    <div class="inner">
+                        <h3>{{total_pending_leaves}} </h3>
+                        <p>Pending Leaves </p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-user-clock"></i>
+                    </div>
+                    <a href="{% url 'emp_leaves_index' %}" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                <div class="card-box border bg-danger">
+                    <div class="inner">
+                        <h3>{{total_rejected_leaves}} </h3>
+                        <p>Rejeted Leaves </p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-user-times"></i>
+                    </div>
+                    <a href="{% url 'emp_leaves_index' %}" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    {% else %}
+    {% include 'components/forbidden.html' %}
+     
+     {% endif %}
+     {% else %}
+     {% include 'components/401.html' %}
+     {% endif %}
+    {% endblock %}    

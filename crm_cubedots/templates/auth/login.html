@@ -1,0 +1,68 @@
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGN IN | CUBEDOTS</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" type="text/css" media="all" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+</head>
+<body>
+    
+
+
+<section class="w3l-login-6">
+    <div class="login-hny">
+        <div class="form-content">
+            <div class="form-right">
+                <div class="overlay">
+                    <div class="grid-info-form">
+                      <br><br><br>
+                        <img class="bp2-whiteorange" src="{% static 'images/index.png' %}" width="62%">
+                        <br><br>
+                        <br>
+                        <span class="block py-3 px-5 text-white " style="background-color:#0a4d68; opacity: 50%;"><b>CUBEDOTS TASK CRM</b></span>
+
+                        
+                    </div>
+                
+                </div>
+            </div>
+            <div class="form-left ">
+                <div class="middle">
+                    
+                    <h4>Sign In</h4>
+                    {% for message in messages %}
+                    {% if message.tags == "success" %}
+                    <span {% if message.tags %} class="alert alert-success float-right" {% endif %}> {{ message }} </span>
+                    {% endif %}
+                    {% endfor %}
+                    <br>
+                    
+                </div>
+                {% load crispy_forms_tags %}
+                
+                <form action="" method="POST" novalidate>
+                    {% csrf_token %}
+                    
+                    {{ form|crispy }}
+                    <input type="submit" class="btn btn-success text-white" value="Submit"><br>
+                   <!------   <a href="{{ '/signup' }}" class="btn btn-info text-white">Sign Up</a> -->
+                </form>
+              <br>
+              
+            </div>
+            
+        </div>
+        
+    </div>
+</section>
+
+</body>
+</html>

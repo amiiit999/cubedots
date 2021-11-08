@@ -1,0 +1,33 @@
+{% extends 'layouts/hr_layout.html' %}
+{% block content %}
+{% load static %}
+
+{% if user.is_authenticated %}
+    {% if user.is_staff == 1 and user.groups.all.0.name == 'administrator' or user.role == 'administrator' or user.role == 'hr' or user.role == 'hr_admin' %}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-info text-white" style="border-radius: 0;"><b>Add New User</b>
+
+                    <a class="btn btn-sm btn-danger float-right" href="{% url 'hr_employees' %}"> Back</a>
+                </div>
+               
+                <div class="card-body text-left">
+                    <form action="{% url 'hr_employee_store' %}" method="POST">
+                    {% csrf_token %}
+                    {% include 'hrs/employees/_formAdd.html' %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+{% include 'components/forbidden.html' %}
+ {% endif %}
+ {% else %}
+ {% include 'components/401.html' %}
+ {% endif %}
+{% endblock %}

@@ -1,0 +1,741 @@
+<template>
+    <div id="task_tracker" class="container0">
+      <div class="justify-content-center">
+        <div class="row" v-if="checkProcessStatusViewAccess(task)">
+          <div class="col-md-2 mb-2 text-center">
+            <div>
+              <strong>Today Date:</strong> <br />
+              {{ todayDate }}
+            </div>
+            <div>
+              <strong>Today Duration:</strong> <br />
+              {{ todayTakenDuration ? todayTakenDuration : "00:00:00" }}
+            </div>
+            <div>{{ dirty_form }}</div>
+          </div>
+  
+          <div class="col-md-3 mb-2 text-center">
+            <div
+              class="time2"
+              style="font-size: 28px; font-weight: bold; margin-top: 5px"
+            >
+              {{ time }}
+            </div>
+            <div v-if="!taskSpinner" class="taskButtons">
+              <button class="btn btn-success":disabled="running"
+                @click="timerStart"
+              >
+                <i class="fas fa-play-circle fa-lg"></i> Start
+              </button>
+              <button
+                class="btn btn-warning"
+                :disabled="!running"
+                @click="timerPause"
+              >
+                <i class="fas fa-pause-circle fa-lg"></i> Pause
+              </button>
+              <button
+                class="btn btn-danger"
+                :disabled="running"
+                @click="timerReset"
+              >
+                <i class="fas fa-undo fa-sm"></i> Reset
+              </button>
+            </div>
+            <div v-if="taskSpinner">
+              <i class="fas fa-spinner fa-spin"></i>
+            </div>
+          </div>
+  
+          <div class="col-md-4">
+            <div class="form-group">
+              <textarea
+                class="form-control"
+                rows="4"
+                v-model="form.note"
+                placeholder="Note"
+                :disabled="taskLogs.length <= 0"
+              ></textarea>
+            </div>
+          </div>
+          <div class="col-md-3 mb-2 text-center">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Status</div>
+              </div>
+              <select
+                v-model="form.status"
+                class="custom-select"
+                placeholder="select"
+                :disabled="taskLogs.length <= 0"
+              >
+                <option disabled value="">Please select one</option>
+                <option
+                  v-for="(row, index) in task_process_status_list_access"
+                  v-bind:key="index"
+                  v-bind:value="index"
+                >
+                  {{ row }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group mt-3">
+              <button
+                type="button"
+                class="btn btn-primary"
+                @click="formSubmit(form)"
+                :disabled="submitSpinner || taskLogs.length <= 0"
+              >
+                Update
+                <span v-if="submitSpinner"
+                  ><i class="fas fa-spinner fa-spin"></i
+                ></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div class="row" v-if="task">
+          <div class="col-md-3">
+            <div>TT {{ totalTodayTakenDuration }}</div>
+            <div>
+              <strong>Task started at: </strong><br />
+              {{ moment2(task.work_started_at,"YYYY-MM-DD hh:mm:ss A") }}
+            </div>
+            <div>
+              <strong>Task ended at: </strong><br />
+              {{ moment2(task.work_ended_at,"YYYY-MM-DD hh:mm:ss A") }}
+            </div>
+            <div>
+              <strong>Total duration:</strong><br />
+              {{ task.task_duration }} | {{ task.work_duration }} min.
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div>
+              <strong>Is Sub-Task ?:</strong>
+              <span
+                class="badge badge-pill"
+                v-bind:class="{
+                  'badge-success': task.parent_id == 0,
+                  'badge-warning': task.parent_id > 0,
+                }"
+                >{{ task.parent_id ? "YES" : "NO" }} | {{ task.parent_id }}</span
+              >
+            </div>
+            <div>
+              <strong>Status</strong>:<br />
+              <span
+                class="badge badge-pill"
+                v-bind:class="{
+                  'badge-success': task.status == 'active',
+                  'badge-danger': task.status != 'active',
+                }"
+              >
+                {{ task.status }}</span
+              >
+            </div>
+            <div>
+              <strong> Process Status: </strong><br />
+              <span class="badge badge-pill badge-secondary">{{
+                task.process_status
+              }}</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div>
+              <strong>TaskID</strong> :
+              {{ task.taskid ? task.taskid : "-" }}
+            </div>
+            <div>
+              <strong>Task name</strong><br />
+              {{ task.name ? task.name : "-" }}
+            </div>
+            <div>
+              <strong>Description</strong><br />
+              {{ task.description ? task.description : "-" }}
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div class="row">
+          <div class="col-md-6" >
+            <div>
+              <strong>Task Time Logs</strong> {{ totalTakenDuration }} min.
+            </div>
+            <div class="table-responsive">
+              <table class="table table-sm table-hover">
+                <thead>
+                  <tr>
+                    <th width="5%">#</th>
+                    <th width="10%">ID</th>
+                    <th width="20%">Start At</th>
+                    <th width="20%">End At</th>
+                    <th width="15%">Duration</th>
+                    <th width="20%">Created At</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-if="taskLogsSpinner">
+                    <td colspan="7" align="center">
+                      <i class="fas fa-spinner fa-spin"></i> loading...
+                    </td>
+                  </tr>
+                  <tr v-if="!taskLogsSpinner && taskLogs.length == 0">
+                    <td colspan="7" align="center">No data found.</td>
+                  </tr>
+                  <tr
+                    v-if="taskLogs.length > 0 && taskLogsSpinner == false"
+                    v-for="(row, index) in taskLogs"
+                    :key="index"
+                  >
+                    <td width="5%">{{ index + 1 }}</td>
+                    <td width="10%">{{ row.id }}</td>
+                    <td width="20%">{{ moment2(row.work_started_at,"hh:mm:ss A") }}</td>
+                    <td width="20%">{{ moment2(row.work_ended_at,"hh:mm:ss A") }}</td>
+                    <td width="15%">{{ row.work_duration ? row.work_duration : "-" }}</td>
+                    <td width="20%">
+                      {{ moment2(row.created_at,"YYYY-MM-DD") }}<br /><span
+                        class="timesmall"
+                      >
+                        {{ row.created_at | moment("from") }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div><strong>Task Process Status</strong></div>
+            <div class="table-responsive">
+              <table class="table table-sm table-hover">
+                <thead>
+                  <tr>
+                    <th width="5%">#</th>
+                    <th width="10%">ID</th>
+                    <th width="20%">Status</th>
+                    <th width="30%">Note</th>
+                    <th width="20%">Status By</th>
+                    <th width="20%">Created At</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-if="taskStatusSpinner">
+                    <td colspan="7" align="center">
+                      <i class="fas fa-spinner fa-spin"></i> loading...
+                    </td>
+                  </tr>
+                  <tr v-if="!taskStatusSpinner && taskStatus.length == 0">
+                    <td colspan="7" align="center">No data found.</td>
+                  </tr>
+                  <tr
+                    v-if="taskStatus.length > 0 && taskStatusSpinner == false"
+                    v-for="(row, index) in taskStatus"
+                    :key="index"
+                  >
+                    <td width="5%">{{ index + 1 }}</td>
+                    <td width="10%">{{ row.id }}</td>
+                    <td width="20%"><span
+                        class="badge badge-pill"
+                        v-bind:class="{
+                          'badge-secondary':
+                            row.status == 'forwarded_to_tl' ||
+                            row.status == 'forwarded_to_qc',
+                          'badge-success': row.status == 'active',
+                          'badge-danger':
+                            row.status == 'qc_rejected' ||
+                            row.status == 'tl_rejected',
+                        }"
+                      >{{ row.status }}</span>
+                    </td>
+                    <td width="30%">{{ row.note }}</td>
+                    <td width="20%">{{ row.name }}</td>
+                    <td width="20%">
+                      {{ moment2(row.created_at,"YYYY-MM-DD") }}<br /><span
+                        class="timesmall"
+                      >
+                        {{ row.created_at | moment("from") }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+  <!--moment.duration(1, "minutes").humanize(true); // in a minute-->
+  <style scoped>
+  #task_tracker table {
+    font-size: 12px;
+  }
+  #task_tracker .timesmall {
+    font-size: 10px;
+    position: relative;
+    top: -7px;
+  }
+  #ask_tracker tbody {
+      display:block;
+      height:400px;
+      overflow:auto;
+  }
+  #task_tracker thead, #task_tracker tbody tr {
+      display:table;
+      width:100%;
+      table-layout:fixed;
+      /*even columns width , fix width of table too */
+  }
+  </style>
+  <script>
+  export default {
+    data() {
+      return {
+        dirty_form: false,
+        baseUrl: null,
+        baseSegment: null,
+        todayDate: "0000-00-00",
+        time: "00:00:00.000",
+        timeBegan: null,
+        timeStopped: null,
+        stoppedDuration: 0,
+        started: null,
+        running: false,
+        taskSpinner: false,
+        task: null,
+        todayTakenDuration: null,
+        subTaskSpinner: false,
+        subTask: [],
+        taskLogsSpinner: true,
+        taskLogs: [],
+        taskLog: {},
+        taskStatusSpinner: true,
+        taskStatus: [],
+        form: {},
+        submitSpinner: false,
+        task_process_status_list_access: [],
+        updateIntervalTimeRunning: false,
+        // [
+        //  {text: "user_started" , value: "user_started"},
+        //  {text: "forwarded_to_tl" , value: "forwarded_to_tl"},
+        //  {text: "tl_started" , value: "tl_started"},
+        //  {text: "tl_rejected" , value: "tl_rejected"},
+        //  {text: "forwarded_to_qc" , value: "forwarded_to_qc"},
+        //  {text: "qc_started" , value: "qc_started"},
+        //  {text: "qc_rejected" , value: "qc_rejected"},
+        //  {text: "completed" , value: "completed"}
+        // ]
+      };
+    },
+    created() {
+      console.log("created");
+      window.addEventListener("beforeunload", this.confirm_leaving);
+    },
+    mounted() {
+      // console.log(
+      //   "Component mounted.",
+      //   baseUrl,
+      //   "baseSegment ",
+      //   baseSegment,
+      //   "taskStatusListAccess ",
+      //   taskStatusListAccess
+      // );
+      this.baseUrl = baseUrl;
+      this.baseSegment = baseSegment;
+      this.task_process_status_list_access = taskStatusListAccess;
+  
+      // this.task = task;
+      // this.subTask = subTask;
+      this.updateTodayDate();
+      setInterval(() => {
+        this.updateTodayDate;
+      }, 5000);
+      this.getAjaxTask();
+    },
+    computed: {
+      totalTakenDuration: function () {
+        return this.taskLogs.reduce(function (sum, row) {
+          return sum + row.work_duration;
+        }, 0);
+      },
+      totalTodayTakenDuration: function () {
+        let todayMomentDate = Vue.moment().format("YYYY-MM-DD");
+        return this.taskLogs.reduce((sum, row) => {
+          if (row.created_at.indexOf(todayMomentDate) === 0) {
+            sum += row.work_duration;
+          }
+          return sum;
+        }, 0);
+      },
+  
+    },
+    watch: {
+      running: function (newStatus, oldStatus) {
+        console.log("running newStatus ",newStatus);
+        if(newStatus){
+           this.updateIntervalTimeRunning = setInterval(this.updateIntervalTime, intervalTimeDuration);
+        }else{
+          clearInterval(this.updateIntervalTimeRunning);
+        }
+      }
+    },
+    methods: {
+      moment2: function (date,f) {
+        return date ? Vue.moment(date).format(f) : null;
+      },
+      checkProcessStatusViewAccess(task) {
+        //console.log("checkProcessStatusViewAccess main ",);
+        if (!task) return false;
+        //console.log("taskStatusTimerViewAccess ");
+        //let processStatus = taskStatusTimerViewAccess;
+        // console.log(
+        //   "processStatus ",
+        //   task.status,
+        //   task.process_status,
+        //   taskStatusTimerViewAccess
+        // );
+        if (
+          task.status == "active" &&
+          taskStatusTimerViewAccess.indexOf(task.process_status) != -1
+        ) {
+          //console.log("checkProcessStatusViewAccess true ", true);
+          return true;
+        } else {
+          //console.log("checkProcessStatusViewAccess false ", false);
+          return false;
+        }
+      },
+      confirm_leaving(evt) {
+        console.log("beforeunload ", this.dirty_form);
+        if (this.dirty_form) {
+          const unsaved_changes_warning =
+            "You have unsaved changes. Are you sure you wish to leave?";
+          evt.returnValue = unsaved_changes_warning;
+          //return unsaved_changes_warning;
+          return false;
+        } else {
+          return true;
+        }
+      },
+      storeTaskTime() {
+        this.taskSpinner = true;
+        console.log("storeTaskTime", this.timeBegan);
+        axios
+          .post(baseUrl + "/crm/" + this.baseSegment + "/storeTime/" + task.id, {
+            taskId: task.id,
+            startedAt: this.timeBegan,
+          })
+          .then((response) => {
+            // handle success
+            // console.log("response storeTaskTime ", response);
+            this.taskLog = response.data.data;
+            this.getAjaxTask();
+            this.taskSpinner = false;
+          })
+          .catch((error) => {
+            // handle error
+            console.log(error);
+          });
+      },
+      updateTaskTime() {
+        this.taskSpinner = true;
+        this.taskLogsSpinner = true;
+        console.log("updateTaskTime", this.timeStopped);
+        axios
+          .post(baseUrl + "/crm/" + this.baseSegment + "/updateTime/" + task.id, {
+            taskId: task.id,
+            //startedAt :this.timeBegan,
+            endedAt: this.timeStopped,
+          })
+          .then((response) => {
+            // handle success
+            //console.log("response storeTaskTime ", response);
+            //this.getAjaxTaskLogs();
+            this.getAjaxTask();
+            this.taskSpinner = false;
+          })
+          .catch((error) => {
+            // handle error
+            console.log(error);
+          });
+      },
+      updateIntervalTime() {
+        this.taskSpinner = true;
+        this.taskLogsSpinner = true;
+        //console.log("updateIntervalTime", this.timeStopped);
+        //console.log("taskLog in updateIntervalTime ", this.taskLog);
+  
+        if(this.taskLog){
+          axios
+            .post(
+              baseUrl +
+                "/crm/" +
+                this.baseSegment +
+                "/updateIntervalTime/" +
+                task.id,
+              {
+                taskId: task.id,
+                taskLogId: this.taskLog.id,
+                //startedAt :this.timeBegan,
+                endedAt: this.timeStopped,
+              }
+            )
+            .then((response) => {
+              // handle success
+              //console.log("response updateIntervalTime ", response);
+              //this.getAjaxTaskLogs();
+              this.getAjaxTaskLogs();
+              this.taskSpinner = false;
+            })
+            .catch((error) => {
+              // handle error
+              console.log(error);
+              console.log('catch ', error.response.status);
+            });
+        }
+      },
+      getAjaxTaskLogs() {
+        console.log("getAjaxTaskLogs");
+        this.taskLogsSpinner = true;
+        axios
+          .get(
+            baseUrl + "/crm/" + this.baseSegment + "/getAjaxTaskLogs/" + task.id
+          )
+          .then((response) => {
+            let tld = response.data.data;
+            this.taskLogs = tld.taskLogs;
+            this.todayTakenDuration = tld.todayDuration.total_work_duration;
+            this.taskLogsSpinner = false;
+          })
+          .catch((error) => {
+            // handle error
+            console.log(error);
+          });
+      },
+      getAjaxTaskStatus() {
+        console.log("getAjaxTaskStatus");
+        this.taskStatusSpinner = true;
+        axios
+          .get(
+            baseUrl + "/crm/" + this.baseSegment + "/getAjaxTaskStatus/" + task.id
+          )
+          .then((response) => {
+            this.taskStatus = response.data.data;
+            this.taskStatusSpinner = false;
+          })
+          .catch((error) => {
+            // handle error
+            console.log(error);
+          });
+      },
+      getAjaxTask() {
+        this.subTaskSpinner = true;
+        this.subTask = [];
+        // console.log(
+        //   "getAjaxTask  url @@@@@@",
+        //   baseUrl + "/crm/tasks/getAjaxTask/" + task.id
+        // );
+        axios
+          .get(baseUrl + "/crm/" + this.baseSegment + "/getAjaxTask/" + task.id)
+          .then((response) => {
+            // handle success
+            // console.log('response ',response);
+            this.task = response.data.data.task;
+            setTimeout(() => {
+              this.form.status = this.task.process_status;
+              this.subTask = response.data.data.subTask;
+              this.subTaskSpinner = false;
+              this.getAjaxTaskLogs();
+              this.getAjaxTaskStatus();
+            }, 2000);
+          })
+          .catch((error) => {
+            // handle error
+            console.log(error);
+          });
+      },
+      subTaskChecked(e, row) {
+        /*console.log("subTaskChecked ",e, row.id,row.parent_id);
+                   axios.post(baseUrl+'/crm/tasks/updateAjaxSubTask',{
+                      subTaskId : row.id,
+                      parentTaskId : row.parent_id,
+                      startedAt :this.timeBegan
+                       
+                   })
+                  .then((response)  => {
+                      // handle success
+                      console.log('response subTaskChecked ',response);
+                      this.getAjaxTask();
+                      this.timerStop();
+                  })
+                  .catch((error)   =>  {
+                      // handle error
+                      console.log(error);
+                  });*/
+      },
+      updateTodayDate() {
+        //console.log("updateTodayDate ")
+        this.todayDate = this.formatDate(new Date());
+      },
+      formatDate(date) {
+        var d = new Date(date),
+          month = "" + (d.getMonth() + 1),
+          day = "" + d.getDate(),
+          year = d.getFullYear();
+  
+        if (month.length < 2) month = "0" + month;
+        if (day.length < 2) day = "0" + day;
+  
+        return [year, month, day].join("-");
+      },
+      timerStart() {
+        console.log("timerStart ", this.running);
+        this.dirty_form = true;
+        if (this.running) return;
+  
+        if (this.timeBegan === null) {
+          this.timerReset();
+          this.timeBegan = new Date();
+        }
+  
+        if (this.timeStopped !== null) {
+          this.stoppedDuration += new Date() - this.timeStopped;
+        }
+  
+        this.started = setInterval(this.timerClockRunning, 10);
+        this.running = true;
+        this.storeTaskTime();
+      },
+      timerStop() {
+        console.log("timerStop ", this.running);
+        this.running = false;
+        this.timeStopped = new Date();
+        clearInterval(this.started);
+        this.submitTask();
+        //this.dirty_form = false;
+      },
+      // runInterval(){
+      //   setInterval(this.updateTaskTime, 50000);
+      // },
+      timerPause() {
+        console.log("timerPause ", this.running);
+        this.running = false;
+        this.timeStopped = new Date();
+        clearInterval(this.started);
+        this.updateTaskTime();
+        this.dirty_form = false;
+      },
+      timerReset() {
+        console.log("timeReset ", this.running);
+        //this.dirty_form = false;
+        this.running = false;
+        clearInterval(this.started);
+        this.stoppedDuration = 0;
+        this.timeBegan = null;
+        this.timeStopped = null;
+        this.time = "00:00:00.000";
+      },
+      timerClockRunning() {
+        //console.log("timerClockRunning ", this.running);
+        var currentTime = new Date(),
+          timeElapsed = new Date(
+            currentTime - this.timeBegan - this.stoppedDuration
+          ),
+          hour = timeElapsed.getUTCHours(),
+          min = timeElapsed.getUTCMinutes(),
+          sec = timeElapsed.getUTCSeconds(),
+          ms = timeElapsed.getUTCMilliseconds();
+  
+        this.time =
+          this.zeroPrefix(hour, 2) +
+          ":" +
+          this.zeroPrefix(min, 2) +
+          ":" +
+          this.zeroPrefix(sec, 2) +
+          "." +
+          this.zeroPrefix(ms, 3);
+      },
+      zeroPrefix(num, digit) {
+        var zero = "";
+        for (var i = 0; i < digit; i++) {
+          zero += "0";
+        }
+        return (zero + num).slice(-digit);
+      },
+      submitTask() {
+        console.log("submitTask ");
+        console.log("this.timeBegan ", this.timeBegan);
+        console.log("this.timeStopped ", this.timeStopped);
+        console.log("this.stoppedDuration ", this.stoppedDuration);
+      },
+      formSubmit(from) {
+        console.log("formSubmit ", Object.assign({}, from));
+        if (
+          !from.hasOwnProperty("status") &&
+          !Object.values(from).includes("status")
+        ) {
+          alert("Please select status");
+          return false;
+        } else {
+          this.submitSpinner = true;
+          let postForm = Object.assign({}, from);
+          postForm["taskId"] = this.task.id;
+          console.log("postForm ", postForm);
+          axios
+            .post(
+              baseUrl +
+                "/crm/" +
+                this.baseSegment +
+                "/updateStatus/" +
+                postForm["taskId"],
+              postForm
+            )
+            .then((resp) => {
+              console.log("resp formSubmit ", resp);
+              if (resp.data.status) {
+                this.from = {};
+                this.submitSpinner = false;
+                setTimeout(() => {
+                  //window.location.reload();
+                  this.getAjaxTask();
+                }, 1000);
+              }
+            })
+            .catch((error) => {
+              // handle error
+              console.log("error catech ", error);
+              this.submitSpinner = false;
+              if (error.response) {
+                // Request made and server responded
+                console.log("data", error.response.data);
+                console.log("status", error.response.status);
+                console.log("headers", error.response.headers);
+              } else if (error.request) {
+                // The request was made but no response was received
+                console.log("request", error.request);
+              } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log("Error", error.message);
+              }
+            });
+        }
+      },
+      convertMinutes(minutes) {
+        // console.log("convertMinutes" ,minutes);
+        // //return minutes;
+        // var minutes= parseInt(minutes);
+        // console.log("convertMinutes after" ,minutes);
+        // if(minutes < 60) {
+        //     return minutes+" mins";
+        // } else if(minutes < 1440) { //1 day = 1440 minutes
+        //     return (minutes/60) +" hrs, "+(minutes%60)+" mins";
+        // } else {
+        //     return (minutes/1440)+" days";
+        // }
+      },
+    },
+  };
+  </script>
+  
