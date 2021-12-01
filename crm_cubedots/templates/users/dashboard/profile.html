@@ -28,12 +28,14 @@
             <span><i class="fas fa-building fa-2x"></i> <b>&nbsp;&nbsp;&nbsp; Department </b>:
               {{form.instance.department}}</span>
           </div>
+         
           <div class="col-md-6 p-3">
             <form action="{% url 'user_profile' form.instance.id %}" method="POST" class="post-form"
               enctype="multipart/form-data">
               {% csrf_token %}
               {% if form.instance.avatar %}
               <div class="container-profilepic card rounded-circle overflow-hidden float-right">
+               
                 <img src="{{form.instance.avatar.url}}" width="150" height="150" alt=""
                   class="rounded-circle border border-dark" />
                 <div class="middle-profilepic text-center card-img-overlay d-none flex-column justify-content-center">
